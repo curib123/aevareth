@@ -1,259 +1,204 @@
-elemental-prism-world/
-│
+# Aevareth Documentation Structure
+
+The original proposal split the project into well over one hundred Markdown files. That creates duplication, stale references, and unnecessary maintenance before production has even started.
+
+Aevareth will use a deliberately small canonical documentation set until the project becomes large enough to justify a split.
+
+## Current canonical structure
+
+```text
+aevareth/
 ├── README.md
-│
-├── design/
-│   ├── GDD.md
-│   ├── GAMEPLAY_DESIGN.md
-│   ├── PLAYER_EXPERIENCE.md
-│   ├── WORLD_DESIGN.md
-│   ├── STORY_BIBLE.md
-│   ├── ART_DIRECTION.md
-│   ├── AUDIO_DIRECTION.md
-│   ├── UI_UX_DESIGN.md
-│   └── CONTENT_GUIDELINES.md
-│
-├── development/
-│   ├── SDLC.md
-│   ├── DEVELOPMENT_ROADMAP.md
-│   ├── PRODUCTION_PLAN.md
-│   ├── MILESTONES.md
-│   ├── PROTOTYPE_PLAN.md
-│   ├── VERTICAL_SLICE.md
-│   ├── PRODUCTION_PHASE.md
-│   ├── QA_PLAN.md
-│   ├── TESTING_STRATEGY.md
-│   ├── BETA_PLAN.md
-│   ├── RELEASE_PLAN.md
-│   ├── LIVE_OPERATIONS.md
-│   ├── UPDATE_PLAN.md
-│   └── EXPANSION_PLAN.md
-│
-├── unity/
-│   ├── UNITY_PROJECT_SETUP.md
-│   ├── UNITY_VERSION.md
-│   ├── PROJECT_SETTINGS.md
-│   ├── SCENE_ARCHITECTURE.md
-│   ├── PREFAB_ARCHITECTURE.md
-│   ├── SCRIPT_ARCHITECTURE.md
-│   ├── SCRIPTABLE_OBJECTS.md
-│   ├── ADDRESSABLES.md
-│   ├── ANIMATION_SYSTEM.md
-│   ├── VFX_SYSTEM.md
-│   ├── AUDIO_SYSTEM.md
-│   ├── UI_SYSTEM.md
-│   ├── SAVE_SYSTEM.md
-│   ├── BUILD_PIPELINE.md
-│   └── PERFORMANCE_OPTIMIZATION.md
-│
-├── game/
-│   ├── GAME_OVERVIEW.md
-│   ├── GAMEPLAY.md
-│   ├── GRAPHICS_STYLE.md
-│   ├── CAMERA_SYSTEM.md
-│   ├── 3D_WORLD_SYSTEM.md
-│   ├── NODE_MOVEMENT_SYSTEM.md
-│   ├── MAP_EXPLORATION_SYSTEM.md
-│   ├── MONSTER_SELECTION_SYSTEM.md
-│   ├── ELEMENTS.md
-│   ├── BATTLE_SYSTEM.md
-│   ├── CAPTURE_SYSTEM.md
-│   ├── MONSTER_SYSTEM.md
-│   ├── SKILL_SYSTEM.md
-│   ├── EVOLUTION_SYSTEM.md
-│   ├── HOME_SYSTEM.md
-│   ├── INVENTORY_SYSTEM.md
-│   ├── SAVE_SYSTEM.md
-│   └── PROGRESSION.md
-│
-├── items/
-│   ├── ITEM_SYSTEM.md
-│   ├── POTIONS.md
-│   ├── BATTLE_ITEMS.md
-│   ├── STATUS_ITEMS.md
-│   ├── BUFFS.md
-│   ├── DEBUFFS.md
-│   ├── ELEMENTAL_ITEMS.md
-│   ├── PRISM_ITEMS.md
-│   ├── EVOLUTION_ITEMS.md
-│   ├── KEY_ITEMS.md
-│   ├── QUEST_ITEMS.md
-│   └── CONSUMABLES.md
-│
-├── prism/
-│   ├── PRISM_SYSTEM.md
-│   ├── PRISM_ORBS.md
-│   ├── PRISM_SHARDS.md
-│   ├── ELEMENTAL_CORES.md
-│   ├── PRISM_GUARDIANS.md
-│   └── PRISM_OF_NULL.md
-│
-├── world/
-│   ├── WORLD_MAP.md
-│   ├── WORLD_PROGRESSION.md
-│   ├── COMMON_WORLD.md
-│   ├── WATER_WORLD.md
-│   ├── LAND_WORLD.md
-│   ├── ELECTRIC_WORLD.md
-│   ├── FIRE_WORLD.md
-│   ├── ICE_WORLD.md
-│   ├── AIR_WORLD.md
-│   ├── LIGHT_WORLD.md
-│   └── DARK_WORLD.md
-│
-├── locations/
-│   ├── LOCATION_DATABASE.md
-│   ├── TOWNS.md
-│   ├── ROUTES.md
-│   ├── DUNGEONS.md
-│   ├── CAVES.md
-│   ├── TEMPLES.md
-│   ├── RUINS.md
-│   └── PRISM_SHRINES.md
-│
-├── story/
-│   ├── MAIN_STORY.md
-│   ├── STORY_TIMELINE.md
-│   ├── STORY_PROGRESSION.md
-│   ├── CHAPTER_01_COMMON.md
-│   ├── CHAPTER_02_WATER.md
-│   ├── CHAPTER_03_LAND.md
-│   ├── CHAPTER_04_ELECTRIC.md
-│   ├── CHAPTER_05_FIRE.md
-│   ├── CHAPTER_06_ICE.md
-│   ├── CHAPTER_07_AIR.md
-│   ├── CHAPTER_08_LIGHT.md
-│   ├── CHAPTER_09_DARK.md
-│   ├── CUTSCENES.md
-│   └── ENDING.md
-│
-├── monsters/
-│   ├── MONSTER_DATABASE.md
-│   ├── MONSTER_STATS.md
-│   ├── MONSTER_ELEMENTS.md
-│   ├── MONSTER_EVOLUTION.md
-│   ├── MONSTER_AI.md
-│   ├── MONSTER_BEHAVIOR.md
-│   ├── COMMON_MONSTERS.md
-│   ├── WATER_MONSTERS.md
-│   ├── LAND_MONSTERS.md
-│   ├── ELECTRIC_MONSTERS.md
-│   ├── FIRE_MONSTERS.md
-│   ├── ICE_MONSTERS.md
-│   ├── AIR_MONSTERS.md
-│   ├── LIGHT_MONSTERS.md
-│   ├── DARK_MONSTERS.md
-│   ├── RARE_MONSTERS.md
-│   ├── LEGENDARY_MONSTERS.md
-│   └── MYTHIC_MONSTERS.md
-│
-├── skills/
-│   ├── SKILL_DATABASE.md
-│   ├── SKILL_CATEGORIES.md
-│   ├── WATER_SKILLS.md
-│   ├── ICE_SKILLS.md
-│   ├── FIRE_SKILLS.md
-│   ├── LAND_SKILLS.md
-│   ├── ELECTRIC_SKILLS.md
-│   ├── AIR_SKILLS.md
-│   ├── LIGHT_SKILLS.md
-│   ├── DARK_SKILLS.md
-│   └── COMMON_SKILLS.md
-│
-├── characters/
-│   ├── CHARACTER_DATABASE.md
-│   ├── PLAYER.md
-│   ├── PROFESSOR_ARIN.md
-│   ├── RIVAL.md
-│   ├── PRISM_KEEPER.md
-│   ├── MARINA.md
-│   ├── TERRA.md
-│   ├── VOLT.md
-│   ├── KAIRO.md
-│   ├── SERENA.md
-│   ├── AERO.md
-│   ├── LUNA.md
-│   ├── RAVEN.md
-│   ├── VILLAIN.md
-│   └── SUPPORTING_NPCS.md
-│
-├── trainers/
-│   ├── TRAINER_SYSTEM.md
-│   ├── TRAINER_DATABASE.md
-│   ├── TRAINER_PROGRESSION.md
-│   ├── COMMON_TRAINERS.md
-│   ├── WATER_TRAINERS.md
-│   ├── LAND_TRAINERS.md
-│   ├── ELECTRIC_TRAINERS.md
-│   ├── FIRE_TRAINERS.md
-│   ├── ICE_TRAINERS.md
-│   ├── AIR_TRAINERS.md
-│   ├── LIGHT_TRAINERS.md
-│   └── DARK_TRAINERS.md
-│
-├── quests/
-│   ├── QUEST_SYSTEM.md
-│   ├── MAIN_QUESTS.md
-│   ├── SIDE_QUESTS.md
-│   ├── WORLD_QUESTS.md
-│   ├── NPC_QUESTS.md
-│   ├── PRISM_QUESTS.md
-│   └── EVENT_QUESTS.md
-│
-├── bosses/
-│   ├── BOSS_DATABASE.md
-│   ├── WORLD_BOSSES.md
-│   ├── ELEMENTAL_GUARDIANS.md
-│   ├── LEGENDARY_BOSSES.md
-│   ├── VILLAIN_BATTLES.md
-│   └── FINAL_BOSS.md
-│
-├── encounters/
-│   ├── ENCOUNTER_SYSTEM.md
-│   ├── NODE_ENCOUNTERS.md
-│   ├── RANDOM_ENCOUNTERS.md
-│   ├── STORY_ENCOUNTERS.md
-│   ├── TRAINER_ENCOUNTERS.md
-│   ├── NPC_ENCOUNTERS.md
-│   ├── COMMON_WORLD_ENCOUNTERS.md
-│   ├── WATER_WORLD_ENCOUNTERS.md
-│   ├── LAND_WORLD_ENCOUNTERS.md
-│   ├── ELECTRIC_WORLD_ENCOUNTERS.md
-│   ├── FIRE_WORLD_ENCOUNTERS.md
-│   ├── ICE_WORLD_ENCOUNTERS.md
-│   ├── AIR_WORLD_ENCOUNTERS.md
-│   ├── LIGHT_WORLD_ENCOUNTERS.md
-│   └── DARK_WORLD_ENCOUNTERS.md
-│
-├── events/
-│   ├── EVENT_SYSTEM.md
-│   ├── SEASONAL_EVENTS.md
-│   ├── CHRISTMAS_EVENT.md
-│   ├── HALLOWEEN_EVENT.md
-│   ├── ANNIVERSARY_EVENTS.md
-│   ├── LIMITED_TIME_MAPS.md
-│   └── EVENT_REWARDS.md
-│
-├── technical/
-│   ├── TECHNICAL_DESIGN.md
-│   ├── GAME_ARCHITECTURE.md
-│   ├── DATA_ARCHITECTURE.md
-│   ├── SAVE_DATA.md
-│   ├── AI_ARCHITECTURE.md
-│   ├── MAP_ARCHITECTURE.md
-│   ├── NODE_ARCHITECTURE.md
-│   ├── BATTLE_ARCHITECTURE.md
-│   ├── INVENTORY_ARCHITECTURE.md
-│   └── PRISM_ARCHITECTURE.md
-│
-└── production/
-    ├── ASSET_PIPELINE.md
-    ├── 3D_MODEL_PIPELINE.md
-    ├── ANIMATION_PIPELINE.md
-    ├── VFX_PIPELINE.md
-    ├── AUDIO_PIPELINE.md
-    ├── UI_PIPELINE.md
-    ├── MAP_PRODUCTION.md
-    ├── MONSTER_PRODUCTION.md
-    ├── NPC_PRODUCTION.md
-    └── CONTENT_PIPELINE.md
+├── all_plan.md
+├── archectural_plan.md
+├── DEVELOPMENT_ROADMAP.md
+├── QA_TESTING.md
+├── DOCUMENTATION_AUDIT.md
+└── plan-structure.md
+```
+
+## Responsibilities
+
+### `README.md`
+
+Project entry point and authority order.
+
+Contains:
+
+- project identity
+- implementation status
+- locked product pillars
+- canonical document links
+- scope boundaries
+- production rule
+
+### `all_plan.md`
+
+Canonical game-design specification.
+
+Contains:
+
+- product vision
+- gameplay loop
+- nine elements
+- world progression
+- node exploration
+- interactions/story orchestration
+- player home
+- monster/party systems
+- battle rules
+- items/capture
+- quests/progression
+- complete main-story structure
+- post-game
+- events
+- future PvP preparation
+
+### `archectural_plan.md`
+
+Canonical technical architecture.
+
+Contains:
+
+- architecture layers
+- stable IDs
+- runtime state
+- services/bootstrap
+- node/map architecture
+- Battle World rules
+- battle runtime
+- story/interaction architecture
+- quest/event integration
+- save/load
+- content validation
+- performance
+- Unity project structure
+- Blender/Unity asset pipeline
+- debugging/testing seams
+
+### `DEVELOPMENT_ROADMAP.md`
+
+Dependency-aware production plan.
+
+Contains:
+
+- must/should/optional/future scope
+- prototype and vertical-slice sequence
+- production phases
+- acceptance gates
+- content-production order
+- release preparation
+
+### `QA_TESTING.md`
+
+Quality strategy.
+
+Contains:
+
+- unit/EditMode testing
+- PlayMode/integration testing
+- gameplay/regression coverage
+- save/load and migration tests
+- content validation
+- performance testing
+- compatibility/release gates
+- high-risk system matrix
+
+### `DOCUMENTATION_AUDIT.md`
+
+Record of the README audit.
+
+Contains:
+
+- contradictions found
+- missing requirements
+- technical risks
+- simplifications
+- decisions/resolutions
+- deferred features
+
+### `plan-structure.md`
+
+This file. It defines documentation ownership and prevents uncontrolled documentation sprawl.
+
+---
+
+## When a document may be split
+
+Split a canonical document only when **at least one** of these is true:
+
+1. It has multiple owners who need to change separate areas independently.
+2. A section becomes large enough that readers consistently struggle to find or review it.
+3. A production workflow needs a dedicated artifact with its own lifecycle/versioning.
+4. A system has enough implementation detail and tests that mixing it into a broader document creates ambiguity.
+
+Do not split simply because a new system exists.
+
+---
+
+## Future splits that may become justified
+
+These are **not required now**.
+
+Possible later documents:
+
+```text
+docs/
+├── STORY_BIBLE.md
+├── CONTENT_DATABASE_GUIDE.md
+├── ART_DIRECTION.md
+├── AUDIO_DIRECTION.md
+├── UI_UX_SPEC.md
+├── SAVE_SCHEMA.md
+└── LIVE_EVENT_BACKEND.md
+```
+
+Create them only when the related work actually begins and the canonical document can link to a single authoritative source.
+
+---
+
+## Unity project documentation
+
+When the Unity project is created, keep implementation-adjacent instructions near the code when possible.
+
+Recommended eventual structure:
+
+```text
+Assets/_Aevareth/
+├── Runtime/
+├── Editor/
+├── Tests/
+└── Content/
+```
+
+Do not create empty directory trees just to match a plan. Create folders alongside the first real implementation that needs them.
+
+---
+
+## Documentation rules
+
+1. Every fact should have one authoritative home.
+2. Other files link to that authority instead of duplicating long sections.
+3. Stable terminology is mandatory: use **Land**, not Earth.
+4. Use stable system/content names consistently with `archectural_plan.md`.
+5. Mark assumptions and tuning values as such.
+6. Do not describe unimplemented future systems as if they already exist.
+7. Keep future PvP architecture preparation separate from actual networking implementation.
+8. Update `DOCUMENTATION_AUDIT.md` when a major locked decision intentionally changes.
+9. Update `DEVELOPMENT_ROADMAP.md` when phase gates or scope change.
+10. A document marked canonical must not contain raw conversational notes such as “add this”, duplicate proposals, or unresolved alternatives.
+
+---
+
+## Authority order
+
+If documents conflict, use this order:
+
+1. `README.md` — project-wide scope and authority
+2. `all_plan.md` — gameplay/story intent
+3. `archectural_plan.md` — technical implementation boundaries
+4. `DEVELOPMENT_ROADMAP.md` — build order
+5. `QA_TESTING.md` — verification expectations
+6. `DOCUMENTATION_AUDIT.md` — rationale/history, not runtime authority
+
+This structure is intentionally small, practical, and maintainable.
