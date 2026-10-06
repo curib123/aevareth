@@ -1,756 +1,411 @@
+# Aevareth: Monster Realm — Canonical Game Design Specification
 
+> **Nine Elements. One Realm. Infinite Legends.**
 
- # Aevareth: Monster Realm
-
- > **Nine Elements. One Realm. Infinite Legends.**
-
- ## 1\. Game Identity
-
- **Title:** Aevareth: Monster Realm
-
- **Genre:** 3D Monster-Collecting RPG
-
- **Core Gameplay:**
-
- - Explore 3D worlds
-- Discover wild monsters
-- Catch monsters using Prism Orbs
-- Build a team
-- Train monsters
-- Learn elemental skills
-- Battle wild monsters and trainers
-- Complete quests
-- Meet NPCs
-- Discover the story
-- Unlock new worlds
-- Collect items
-- Evolve monsters
-- Participate in future event maps
-
- **Camera:** Controlled 3D top-back/third-person camera
-
- **Movement:** Tap-based stepping-stone/node movement
-
- **Player Control Philosophy:** The player chooses destinations and actions rather than directly controlling character movement.
+**Status:** Canonical game-design baseline v1  
+**Genre:** 3D monster-collecting RPG  
+**Primary interaction:** Touch/mouse pointer; no joystick, WASD, or manual exploration-camera rotation  
+**Exploration:** Node/stepping-stone movement  
+**Combat:** Turn-based monster battles  
+**Primary scope:** Single-player story campaign with future-map/event extensibility and future PvP preparation only
 
 ---
 
- # 2\. Core Game Concept
+## 1. Product vision
 
- Aevareth is a 3D monster realm divided into elemental worlds.
+Aevareth is a controlled 3D monster adventure in which the player explores handcrafted node graphs, encounters creatures and characters, captures monsters using Prism Orbs, builds a party, completes quests, advances through nine elemental worlds, and uncovers the purpose of the ancient Prism system.
 
- The player explores the world through a network of designed stepping stones.
+The core design favors clarity and production practicality over free-roam complexity. The player chooses meaningful destinations and actions while the game controls movement paths, camera framing, encounter staging, and cinematic transitions.
 
- The player does not use:
+### Core pillars
 
- - Virtual joystick
-- WASD movement
-- Manual camera rotation
-- Free-look controls
-
- Instead, the player taps a visible stepping stone.
-
- The avatar automatically walks to the selected stone.
-
- This gives the game a controlled, cinematic 3D presentation while allowing the developer to precisely control encounters, NPC placement, story progression, and map design.
+1. **Explore** visually distinct 3D elemental worlds through connected nodes.
+2. **Collect** monsters through battle and Prism Orb capture.
+3. **Build** a flexible party and learn elemental skills.
+4. **Battle** through a readable, data-driven turn system.
+5. **Progress** through quests, trainers, bosses, story flags, and world unlocks.
+6. **Discover** one connected story about elemental balance and the Prism of Null.
+7. **Expand** through new maps and events without rewriting core systems.
 
 ---
 
- # 3\. Nine Elements
+## 2. Player experience
 
- Aevareth contains nine elemental traits.
+### Exploration loop
 
- | Element | Concept |
-| --- | --- |
-| Common | Balance |
-| Water | Change |
-| Land | Strength |
-| Electric | Energy |
-| Fire | Creation |
-| Ice | Preservation |
-| Air | Freedom |
-| Light | Hope |
-| Dark | Fear |
-
-The elements affect:
-
- - Monsters
-- Skills
-- Battles
-- Items
-- Buffs
-- Debuffs
-- Prism Orbs
-- World design
-- Quests
-- Bosses
-- Story
-
----
-
- # 4\. World Progression
-
- The primary adventure contains nine connected worlds.
-
-```
-COMMON
-   ↓
-WATER
-   ↓
-LAND
-   ↓
-ELECTRIC
-   ↓
-FIRE
-   ↓
-ICE
-   ↓
-AIR
-   ↓
-LIGHT
-   ↓
-DARK
-   ↓
-PRISM OF NULL
+```text
+Choose visible connected node
+ -> avatar rotates and follows authored path
+ -> arrive at node
+ -> resolve node state + conditions
+ -> trigger interaction, encounter, reward, or nothing
+ -> apply result
+ -> reveal/enable next choices
 ```
 
- Every world has a unique visual identity and gameplay content.
+The player never needs precision movement. Node placement and camera composition must make valid destinations easy to read.
 
- However, the story is continuously connected.
+### Complete gameplay loop
 
----
-
- # 5\. 3D Game Presentation
-
- Aevareth is a fully 3D game.
-
- ## 3D Elements
-
- The following are 3D:
-
- - Player avatar
-- Monsters
-- NPCs
-- Trainers
-- Buildings
-- Terrain
-- Trees
-- Caves
-- Dungeons
-- Water
-- Lava
-- Ice
-- Clouds
-- Effects
-- Items
-- Battle arenas
-- Prism structures
-
- The player can see the complete body of the avatar while exploring.
-
----
-
- # 6\. Camera System
-
- The game uses a controlled camera.
-
- ## Exploration Camera
-
- The camera is positioned behind and above the player.
-
- The player can see:
-
- - Full avatar
-- Surrounding environment
-- Stepping stones
-- Monsters
-- NPCs
-- Trainers
-- Important objects
-
- The player cannot manually rotate the camera.
-
- The game automatically controls:
-
- - Camera position
-- Camera angle
-- Camera distance
-- Camera transitions
-- Cinematic views
-
----
-
- # 7\. Node / Stepping-Stone Movement
-
- The main exploration system is based on nodes.
-
- Every map contains connected stepping stones.
-
- Example:
-
-```
-                [Stone]
-                   |
-[Stone] --- [Stone] --- [Stone]
-                   |
-                [Stone]
-                   |
-                [Stone]
+```text
+Explore
+ -> encounter / interact
+ -> battle or story action
+ -> capture / reward / quest progress
+ -> improve party
+ -> unlock routes and maps
+ -> defeat trainer/boss
+ -> complete world objectives
+ -> unlock next world
+ -> continue story
 ```
 
- Each stone represents a possible player position.
+### Failure philosophy
 
- The player taps a stone.
+Normal defeat should cost time and positioning, not destroy long-term progress.
 
- The avatar automatically moves there.
+Default defeat behavior:
 
----
+- Battle ends as defeat.
+- Consumables already committed remain consumed only if the battle result was finalized.
+- Player returns to the last safe checkpoint/home or map entry defined by data.
+- Story-required victories remain incomplete.
+- No permanent monster loss in the base game.
 
- # 8\. Stepping-Stone Directions
-
- Nodes can connect in different directions:
-
- - Forward
-- Backward
-- Left
-- Right
-- Diagonal
-- Branch
-- Junction
-
- When moving to a different direction, the avatar automatically rotates toward the destination.
-
- The player never manually rotates the character.
+Special failure rules must be explicit in content data.
 
 ---
 
- # 9\. Map-Specific Stepping Stones
+## 3. Elements
 
- Each world can have unique stepping-stone designs.
+Aevareth has exactly nine base elements:
 
- ## Water
+| Element | Theme | Core relationship |
+|---|---|---|
+| Common | Balance | Neutral baseline |
+| Water | Change | Strong vs Fire; weak vs Electric |
+| Land | Strength | Strong vs Electric; weak vs Water |
+| Electric | Energy | Strong vs Water; weak vs Land |
+| Fire | Creation | Strong vs Ice; weak vs Water |
+| Ice | Preservation | Strong vs Air; weak vs Fire |
+| Air | Freedom | Strong vs Land; weak vs Electric |
+| Light | Hope | Strong vs Dark; also vulnerable to Dark |
+| Dark | Fear | Strong vs Light; also vulnerable to Light |
 
- - Floating platforms
-- Wooden docks
-- Coral platforms
-- Small islands
-- Water lilies
+**Terminology rule:** use **Land**, never `Earth`, for this element.
 
- ## Land
-
- - Stone platforms
-- Ancient ruins
-- Dirt paths
-- Rock formations
-
- ## Electric
-
- - Metal platforms
-- Technology panels
-- Energy platforms
-
- ## Fire
-
- - Lava rocks
-- Obsidian
-- Volcanic platforms
-
- ## Ice
-
- - Ice platforms
-- Frozen rocks
-- Crystal platforms
-
- ## Air
-
- - Clouds
-- Floating islands
-- Sky platforms
-
- ## Light
-
- - Crystal platforms
-- Golden paths
-- Sacred platforms
-
- ## Dark
-
- - Shadow platforms
-- Corrupted stone
-- Abyssal platforms
-
- The movement logic remains identical.
-
- Only the appearance and content change.
+The effectiveness table is configuration data, not hard-coded conditionals. Common defaults to neutral unless a specific skill/effect says otherwise.
 
 ---
 
- # 10\. Node Content
+## 4. World progression
 
- Any stepping stone can contain an encounter or event.
+The main story progresses through nine worlds:
 
- Possible node content:
-
- - Nothing
-- Wild monster
-- Rare monster
-- Legendary monster
-- NPC
-- Trainer
-- Boss
-- Item
-- Treasure
-- Quest
-- Story event
-- Shop
-- Portal
-- Map exit
-- Puzzle
-- Secret area
-
- This allows complete control over map design.
-
----
-
- # 11\. Dynamic Node States
-
- Nodes can change based on story progression.
-
- Example:
-
-```
-Before Quest
-    ↓
-[Locked Stone]
-
-Quest Completed
-    ↓
-[Unlocked Stone]
-
-Story Progressed
-    ↓
-[Trainer]
-
-Later
-    ↓
-[Quest NPC]
+```text
+1. Common — Meadow of Beginnings
+2. Water — Azure Tide
+3. Land — Ancient Terra
+4. Electric — Stormspire
+5. Fire — Emberfall
+6. Ice — Frostveil
+7. Air — Skyreach
+8. Light — Solara
+9. Dark — Nocturne Abyss
+   -> Prism of Null finale
 ```
 
- The same location can therefore evolve as the player's story advances.
+Each world contains multiple maps/areas. A world is not one giant Unity scene.
+
+Each map defines:
+
+- node graph
+- map art/environment
+- NPCs and trainers
+- encounters
+- quests/story sequences
+- collectibles/items
+- exits/portals
+- map music/lighting/weather profile
+- one primary Battle World reference
+
+World progression is story-gated but completed maps remain revisitable unless a specific story state temporarily prevents access.
 
 ---
 
- # 12\. Random and Wild Monster Encounters
+## 5. Node exploration
 
- Wild monsters can appear on any suitable stepping stone.
+### Node definition
 
- Encounter types:
+A node may contain:
 
- - Random
-- Visible
-- Story-based
-- Rare
-- Legendary
-- Weather-based
-- Time-based
-- Event-based
-- Quest-based
+- empty traversal
+- NPC interaction
+- trainer interaction
+- wild encounter
+- rare/legendary encounter
+- boss
+- item/treasure
+- quest interaction
+- story sequence
+- shop
+- portal/exit
+- puzzle
+- secret path
 
- Example:
+A node itself does not hard-code “talk” or “battle.” It resolves an `InteractionDefinition` or `EncounterDefinition`, which decides what happens.
 
+### Dynamic node states
+
+Node presentation/content may change based on reusable conditions such as:
+
+- quest active/completed
+- story flag
+- item owned
+- monster captured
+- boss defeated
+- world unlocked
+- player/monster level
+- time/weather profile
+- event active
+
+Use AND/OR/NOT condition composition rather than custom scripts for normal content gating.
+
+---
+
+## 6. Interaction and story orchestration
+
+Interactions are reusable action sequences.
+
+Supported actions include:
+
+- dialogue
+- camera focus
+- character movement
+- animation
+- VFX/audio
+- spawn/despawn
+- give/remove item
+- set story flag
+- start/advance quest
+- start battle
+- wait for battle result
+- reward
+- choice
+- unlock node/map/world
+
+Examples:
+
+```text
+NPC talk only:
+Dialogue -> QuestUpdate -> End
+
+Trainer:
+Dialogue -> Battle -> Result -> Dialogue -> Reward
+
+Boss:
+StoryIntro -> Battle -> Result -> EndingSequence -> Unlock
+
+Legendary:
+Cinematic -> Battle -> Capture/DefeatResult -> StoryFlag
 ```
-Stone 01 → Empty
-Stone 02 → Water Monster
-Stone 03 → NPC
-Stone 04 → Trainer
-Stone 05 → Rare Monster
-Stone 06 → Story Boss
-```
+
+Battle is one reusable action inside a sequence, not a special NPC type.
 
 ---
 
- # 13\. Player Home
+## 7. Player home
 
- The player has a personal 3D home/base.
+The home is a hub for:
 
- The home acts as both:
+- party management
+- monster collection/storage
+- basic monster display
+- item storage
+- quest board
+- map/world selection where appropriate
+- shop access where appropriate
+- player/settings screens
 
- - A 3D monster environment
-- A game hub/interface
+### Scope control
 
- ## Home Features
+For the first production version, home monsters need only:
 
- - Monster area
-- Monster display
-- Monster management
-- Training area
-- Item storage
-- Prism Orb storage
-- Quest board
-- Collection
-- Map selection
-- Shop
-- Settings
-- Player information
+- idle
+- walk/hover/swim locomotion as appropriate
+- simple wander
+- simple player reaction
 
----
-
- # 14\. Monster Home Area
-
- The player's monsters exist as 3D animated creatures.
-
- They move automatically.
-
- The player does not directly control them.
-
- Monsters can:
-
- - Walk
-- Run
-- Idle
-- Sleep
-- Play
-- Eat
-- Interact
-- Follow the player
-- React to objects
-- React to other monsters
-- Perform elemental animations
-
- Different monsters can have different personalities.
+Complex social simulation, eating, personality-to-personality interactions, advanced schedules, and large autonomous populations are **should-have polish**, not core architecture blockers.
 
 ---
 
- # 15\. Monster Selection
+## 8. Monster model
 
- At the beginning of the adventure, the player selects three monsters.
+### Monster definition data
 
- These form the initial party.
+Every species defines:
 
- The player can later capture additional monsters and manage their party.
+- stable ID
+- display name
+- element
+- species/family
+- rarity
+- base stats
+- level-growth profile
+- learnable skills
+- traits/abilities if used
+- capture rate
+- evolution paths
+- model/prefab reference
+- animation/VFX/audio references
+- habitat tags
 
- The player selects monsters through the interface.
+### Monster instance data
 
- Monsters are not directly controlled during normal exploration.
+Each captured monster owns persistent state:
 
----
+- unique instance ID
+- species definition ID
+- level
+- XP
+- calculated stats
+- current HP outside battle as required
+- learned/equipped skills
+- evolution state
+- friendship/personality values only where gameplay uses them
+- capture provenance
 
- # 16\. Monster System
+Presentation objects are never the authority for monster progression.
 
- Every monster has:
+### Rarity
 
- - Name
-- Element
-- Species
-- Level
-- HP
-- Attack
-- Defense
-- Speed
-- Special stats
-- Skills
-- Traits
-- Evolution
-- Rarity
-- Capture information
-- Personality
-- Growth data
+Recommended content rarity labels:
 
- Monster categories include:
-
- - Common
+- Common
 - Uncommon
 - Rare
 - Epic
 - Legendary
 - Mythic
 
----
-
- # 17\. Monster Movement
-
- Monsters are fully 3D and animated.
-
- They move automatically.
-
- Examples:
-
- - Small monsters follow closely.
-- Large monsters walk behind the player.
-- Flying monsters hover.
-- Water monsters swim in water areas.
-- Air monsters fly around the player.
-- Dark monsters may disappear and reappear.
-- Light monsters may leave glowing effects.
+Rarity affects acquisition/content expectations; it must not automatically determine battle power.
 
 ---
 
- # 18\. Prism Orb System
+## 9. Party and starters
 
- Prism Orbs are the main monster-catching devices.
+At the beginning of the story, the player selects **three starter monsters**.
 
- The player uses Prism energy to capture monsters.
+Persistent party limit: **6 monsters**.
 
- ## Prism Orb Types
+Default battle active slots: **1 vs 1**.
 
- - Basic Prism Orb
-- Greater Prism Orb
-- Element Prism Orb
-- Ancient Prism Orb
-- Legendary Prism Orb
-- Ultimate Prism
+Battle rules may later support special 2v2 or boss formats through data, but the initial vertical slice and normal campaign battles use 1 active monster per side.
 
- Element Prism Orbs include:
-
- - Water Prism Orb
-- Land Prism Orb
-- Electric Prism Orb
-- Fire Prism Orb
-- Ice Prism Orb
-- Air Prism Orb
-- Light Prism Orb
-- Dark Prism Orb
-- Common Prism Orb
+When the party is full, newly captured monsters go to storage unless content explicitly overrides this behavior.
 
 ---
 
- # 19\. Prism System
+## 10. Battle rules
 
- Prism energy is the central mystery of Aevareth.
+### Player actions
 
- The ancient civilization created the Prism system to maintain elemental balance.
-
- Prism technology is connected to:
-
- - Monster capture
-- Evolution
-- Legendary monsters
-- Elemental Guardians
-- Ancient ruins
-- World progression
-- Story events
-- The final villain
-
----
-
- # 20\. Prism Items
-
- Important Prism items include:
-
- - Prism Shard
-- Prism Crystal
-- Elemental Core
-- Ancient Prism
-- Dark Prism Fragment
-- Light Prism Fragment
-- Pure Prism
-- Corrupted Prism
-- Ninth Prism
-- Prism Heart
-- Prism Crown
-
----
-
- # 21\. Battle System
-
- Battles are monster-based.
-
- The player selects actions through the interface.
-
- Actions include:
-
- - Skill
+- Skill
+- Switch
 - Item
-- Switch monster
-- Capture
+- Prism Orb / Capture
 - Defend
-- Escape
+- Escape when allowed
 
- Monsters perform their selected actions automatically.
+### Turn flow
 
- The player focuses on strategy rather than direct movement.
+```text
+Turn start
+ -> process start-of-turn statuses
+ -> collect player/AI actions
+ -> validate actions/targets
+ -> determine action order
+ -> execute actions
+ -> resolve effects
+ -> resolve defeats/forced switches
+ -> process end-of-turn statuses
+ -> check victory/defeat/escape/capture
+ -> next turn
+```
 
----
+### Action order
 
- # 22\. Elemental Battle System
+Order is based on:
 
- Elements affect battle effectiveness.
+1. explicit action priority
+2. effective Speed
+3. deterministic tie-breaker supplied by the battle RNG seed
 
- Example:
+### Skill resource decision
 
- | Element | Advantage | Disadvantage |
-| --- | --- | --- |
-| Water | Fire | Electric |
-| Fire | Ice | Water |
-| Ice | Air | Fire |
-| Land | Electric | Water |
-| Electric | Water | Land |
-| Air | Land | Electric |
-| Light | Dark | Dark |
-| Dark | Light | Light |
-| Common | Balanced | Balanced |
+The original documents listed Mana Potions but did not define a mana stat. To avoid adding an unnecessary resource subsystem, **base v1 has no universal mana/MP resource**.
 
-The final combat system can include additional interactions and resistances.
+Skills are constrained by:
 
----
+- availability/learn rules
+- target rules
+- accuracy
+- priority
+- battle/state restrictions
+- optional per-skill usage limit only if a specific design later requires it
 
- # 23\. Skills
+`Mana Potion`, `Super Mana Potion`, and `Full Mana Potion` are removed from the base item list unless a future approved resource system is introduced.
 
- Every monster can learn elemental skills.
+### Damage baseline
 
- ## Water
+Keep the exact formula centralized and configurable. Initial balancing formula:
 
- - Water Shot
-- Aqua Dash
-- Healing Wave
-- Whirlpool
-- Tidal Crash
+```text
+Base = SkillPower * (EffectiveAttack / max(1, EffectiveDefense))
+LevelScale = 0.75 + (Level * 0.025)
+Final = round(Base * LevelScale * ElementMultiplier * CriticalMultiplier * OtherModifiers * Variance)
+Minimum damaging hit = 1
+Variance = 0.90 .. 1.00
+```
 
- ## Ice
+Initial multipliers:
 
- - Ice Shard
-- Frost Bite
-- Freeze Ray
-- Blizzard
-- Frozen Armor
+- strong: 1.5x
+- weak/resisted: 0.67x
+- neutral: 1.0x
+- critical: configurable, initial 1.5x
 
- ## Fire
+These are tunable data values, not immutable design law.
 
- - Ember
-- Flame Bite
-- Fireball
-- Inferno
-- Meteor Flame
+### Buff/debuff stages
 
- ## Land
+Stat-stage range: **-3 to +3** by default.
 
- - Rock Throw
-- Earth Slam
-- Stone Wall
-- Earthquake
-- Terra Crush
-
- ## Electric
-
- - Spark
-- Shock
-- Thunder Fang
-- Lightning Field
-- Thunderstorm
-
- ## Air
-
- - Gust
-- Wind Slash
-- Air Dash
-- Tornado
-- Sky Break
-
- ## Light
-
- - Light Beam
-- Heal
-- Radiant Shield
-- Holy Burst
-- Solar Flare
-
- ## Dark
-
- - Shadow Claw
-- Dark Pulse
-- Fear
-- Curse
-- Nightfall
-
- ## Common
-
- - Quick Strike
-- Guard
-- Focus
-- Power Up
-- Adapt
-- Balance
-- Prism Shift
+The stat-stage multiplier table must be centralized and content-validated.
 
 ---
 
- # 24\. Potion System
+## 11. Effects and status
 
- ## Healing
+Skills and items use reusable effects rather than custom battle-controller branches.
 
- - Health Potion
-- Super Health Potion
-- Hyper Health Potion
-- Full Health Potion
-- Mana Potion
-- Super Mana Potion
-- Full Mana Potion
-- Revival Potion
-- Full Revival
+Core effect families:
 
- ## Status Recovery
+- damage
+- heal
+- buff
+- debuff
+- status apply/remove
+- shield
+- drain
+- cleanse
+- stat modification
+- forced switch
+- capture modifier
 
- - Antidote
-- Burn Cure
-- Ice Cure
-- Shock Cure
-- Sleep Cure
-- Confusion Cure
-- Fear Cure
-- Dark Cure
-- Full Cure
+Status definitions may include:
 
----
-
- # 25\. Buff System
-
- Buffs temporarily improve monster performance.
-
- ## Attack
-
- - Attack Potion
-- Power Potion
-- Critical Potion
-- Rage Potion
-
- ## Defense
-
- - Defense Potion
-- Iron Potion
-- Barrier Potion
-- Guardian Potion
-
- ## Speed
-
- - Speed Potion
-- Wind Tonic
-- Lightning Tonic
-
- ## Elemental
-
- - Water Tonic
-- Fire Tonic
-- Ice Tonic
-- Land Tonic
-- Electric Tonic
-- Air Tonic
-- Light Tonic
-- Dark Tonic
-- Common Tonic
-
- Buffs have duration and stacking limits.
-
----
-
- # 26\. Debuff System
-
- Possible debuffs:
-
- - Attack Down
-- Defense Down
-- Speed Down
-- Accuracy Down
-- Critical Down
 - Burn
 - Freeze
 - Paralysis
@@ -765,974 +420,486 @@ The final combat system can include additional interactions and resistances.
 - Slow
 - Unbalanced
 
- Most stat effects use a maximum of three stages.
+Default status rule: one application does not stack unless its definition explicitly allows stacking. Duration, stack cap, periodic timing, immunity tags, and cleanse category are data.
 
 ---
 
- # 27\. Evolution
+## 12. Items and inventory
 
- Monsters can evolve through:
+### Item categories
 
- - Level
-- Battle experience
-- Elemental requirements
-- Story progression
-- Items
-- Prism energy
-- Friendship
-- Special locations
-- Quest completion
+- healing
+- status recovery
+- battle buff
+- revive
+- Prism Orb
+- evolution
+- key/story
+- quest
+- crafting/material only if later justified
 
- Evolution items include:
+### Base healing/recovery set
 
- - Fire Crystal
-- Water Crystal
-- Ice Crystal
-- Land Crystal
-- Electric Crystal
-- Air Crystal
-- Light Crystal
-- Dark Crystal
-- Balance Crystal
-- Ancient Core
-- Prism Heart
-- Elemental Crown
+Keep the first release small:
 
----
+- Health Potion
+- Super Health Potion
+- Full Health Potion
+- Revival Potion
+- Full Revival
+- Antidote
+- Burn Cure
+- Freeze Cure
+- Shock Cure
+- Sleep Cure
+- Confusion Cure
+- Fear Cure
+- Full Cure
 
- # 28\. World 1 — Meadow of Beginnings
+Avoid multiple nearly identical consumables until balancing proves they add value.
 
- **Element:** Common
+### Economy
 
- The player's starting region.
+Use one primary soft currency for shops/rewards: **Prism Marks**.
 
- ## Features
+The economy must define in data:
 
- - Prism Village
-- Grasslands
-- Forest
-- River
-- Beginner cave
-- Ancient Prism Shrine
+- buy price
+- sell price if sellable
+- stack limit
+- reward amount
+- availability/unlock conditions
 
- ## Story
-
- The annual Prism Festival is interrupted when a mysterious Dark Prism appears.
-
- Wild monsters become aggressive.
-
- The player investigates the shrine.
-
- An ancient message is discovered:
-
- > "When the nine elements awaken, the Prism Gate shall open."
-
- The player discovers a Water Prism signature and begins the journey.
+No premium currency or real-money economy is part of the current scope.
 
 ---
 
- # 29\. World 2 — Azure Tide
+## 13. Prism Orb capture
 
- **Element:** Water
+Base orb families:
 
- A coastal world containing:
+- Basic Prism Orb
+- Greater Prism Orb
+- Element Prism Orb
+- Ancient Prism Orb
+- Legendary Prism Orb
+- Ultimate Prism
 
- - Beaches
-- Oceans
-- Rivers
-- Waterfalls
-- Coral caves
-- Underwater ruins
+Element Prism Orbs exist for all nine elements.
 
- The Water region suffers from abnormal tides.
+### Capture eligibility
 
- Someone is stealing Prism Shards.
+- Wild: allowed by default
+- Trainer-owned: not allowed
+- Boss: disabled unless explicitly enabled
+- Legendary/story/event: explicit data rule
 
- The thief leaves behind a Land symbol.
+### Capture calculation
 
- The player travels to Ancient Terra.
+Capture is centralized and tunable. Inputs:
 
----
+- species base capture rate
+- current HP ratio
+- status modifier
+- orb modifier
+- element match modifier if applicable
+- battle/story restrictions
 
- # 30\. World 3 — Ancient Terra
+Recommended probability pipeline:
 
- **Element:** Land
-
- A world of:
-
- - Mountains
-- Deserts
-- Ruins
-- Temples
-- Canyons
-- Fossil caves
-
- The player discovers the ancient Prism civilization.
-
- The ruins reveal that the nine elements were once balanced.
-
- The villain is searching for the elemental cores.
-
- The trail leads to Stormspire.
-
----
-
- # 31\. World 4 — Stormspire
-
- **Element:** Electric
-
- A technological world powered by Prism energy.
-
- The central reactor becomes unstable.
-
- Electric monsters become corrupted.
-
- The player discovers the villain's organization.
-
- Their next target is the Fire Core.
-
----
-
- # 32\. World 5 — Emberfall
-
- **Element:** Fire
-
- A volcanic region.
-
- The villain attempts to awaken an ancient Fire Guardian.
-
- The player stops the ritual.
-
- An ancient mural reveals nine elemental Guardians surrounding a black Prism.
-
- The player travels to Frostveil.
-
----
-
- # 33\. World 6 — Frostveil
-
- **Element:** Ice
-
- The entire region is freezing.
-
- Even Fire monsters are being affected.
-
- The player discovers artificial Ice Prism amplification.
-
- The Ice Guardian is defeated.
-
- The player's Prism reacts and reveals a hidden destination:
-
- **Skyreach.**
-
----
-
- # 34\. World 7 — Skyreach
-
- **Element:** Air
-
- A world of floating islands.
-
- The player discovers the ancient Prism Library.
-
- The library reveals the existence of:
-
- # The Prism of Null
-
- An artifact capable of absorbing the nine elemental forces.
-
- The player needs Light energy to understand how to stop it.
-
----
-
- # 35\. World 8 — Solara
-
- **Element:** Light
-
- A sacred civilization built around giant Light crystals.
-
- The Light Guardian reveals the truth.
-
- The player's Prism Orb is the:
-
- # Ninth Prism Orb
-
- Common is not merely a neutral element.
-
- It represents:
-
- # Balance
-
- The player's ability to interact with all nine elements comes from this balance.
-
- The villain's final target is the Dark Prism.
-
----
-
- # 36\. World 9 — Nocturne Abyss
-
- **Element:** Dark
-
- The final world.
-
- The villain has gathered the elemental energies.
-
- The elements begin collapsing.
-
- The player enters the Abyss and fights through corrupted locations.
-
- Previous trainers return to help.
-
- The final ritual begins.
-
----
-
- # 37\. Recurring NPCs
-
- Important recurring characters include:
-
- - Professor Arin
-- Rival
-- Prism Keeper
-- Marina
-- Terra
-- Volt
-- Kairo
-- Serena
-- Aero
-- Luna
-- Raven
-- Main Villain
-
- NPCs can:
-
- - Give quests
-- Teach skills
-- Sell items
-- Provide lore
-- Join battles
-- Unlock areas
-- Change locations
-- Return later in the story
-
----
-
- # 38\. Elemental Trainers
-
- Each world has a primary trainer.
-
- | World | Trainer |
-| --- | --- |
-| Common | Rival |
-| Water | Marina |
-| Land | Terra |
-| Electric | Volt |
-| Fire | Kairo |
-| Ice | Serena |
-| Air | Aero |
-| Light | Luna |
-| Dark | Raven |
-
-Trainers are connected to the main story.
-
- They are not simply battle checkpoints.
-
----
-
- # 39\. Quest System
-
- Quests are divided into:
-
- - Main quests
-- Side quests
-- NPC quests
-- World quests
-- Prism quests
-- Event quests
-- Monster quests
-- Trainer quests
-
- Every major map has a primary story quest.
-
----
-
- # 40\. Map Completion
-
- A map becomes complete after its required story objectives are finished.
-
- Example:
-
-```
-Explore
-   ↓
-Meet NPC
-   ↓
-Complete Quest
-   ↓
-Battle Trainer
-   ↓
-Discover Story
-   ↓
-Enter Dungeon
-   ↓
-Defeat Boss
-   ↓
-Complete Final Objective
-   ↓
-Map Completion
-   ↓
-Unlock Animation
-   ↓
-New Map
+```text
+Chance = BaseCaptureRate
+       * HPFactor
+       * StatusModifier
+       * OrbModifier
+       * ContextModifier
 ```
 
----
+Clamp ordinary capturable encounters to a configurable minimum/maximum probability. Do not guarantee capture unless the content explicitly says so.
 
- # 41\. Map Unlock Animation
-
- After completing a world, a special cinematic plays.
-
- Example:
-
-```
-Prism Energy Appears
-        ↓
-Ancient Symbol Activates
-        ↓
-Map Shakes / Reacts
-        ↓
-World Map Opens
-        ↓
-New Region Revealed
-        ↓
-New Map Unlocks
-```
-
- The animation should make unlocking a new world feel important.
+Capture success creates a real persistent `MonsterInstance`, then adds it to party/storage and publishes a capture event.
 
 ---
 
- # 42\. Map Independence
+## 14. Progression, XP, skills, and evolution
 
- Each map has its own:
+### XP
 
- - Art style
-- Music
-- Lighting
-- Environment
-- Weather
-- Monsters
-- NPCs
-- Trainers
-- Items
-- Quests
-- Story events
-- Bosses
-- Stepping-stone appearance
+Battle rewards grant XP according to defeated opponent level, encounter/boss modifiers, and participation rules.
 
- However, the underlying systems remain shared.
+Level-up flow:
 
- This allows development to be modular.
-
----
-
- # 43\. Map Story Connection
-
- Although maps are individually designed, every map contributes to one larger story.
-
-```
-Common
-  ↓
-Water mystery
-  ↓
-Land ruins
-  ↓
-Electric reactor
-  ↓
-Fire Guardian
-  ↓
-Ice corruption
-  ↓
-Air Library
-  ↓
-Light revelation
-  ↓
-Dark finale
+```text
+Gain XP
+ -> level threshold check
+ -> level increase
+ -> recalculate stats
+ -> check learnable skills
+ -> check evolution conditions
+ -> publish progression events
 ```
 
- Every world answers a question while creating another mystery.
+### Evolution
+
+Evolution is definition-driven and can use reusable conditions:
+
+- level
+- item
+- quest completion
+- story flag
+- friendship
+- special location
+- event condition
+
+Evolution presentation must not contain the gameplay rule itself.
 
 ---
 
- # 44\. Locations
+## 15. Quest system
 
- The game supports:
+Quest states:
 
- - Towns
-- Villages
-- Routes
-- Forests
-- Mountains
-- Caves
-- Dungeons
-- Temples
-- Ruins
-- Prisms Shrines
-- Elemental sanctuaries
-- Secret areas
-
----
-
- # 45\. Boss System
-
- Boss types:
-
- - World Boss
-- Elemental Guardian
-- Legendary Boss
-- Story Boss
-- Villain Boss
-- Final Boss
-
- Bosses can have:
-
- - Multiple phases
-- Unique skills
-- Special mechanics
-- Unique rewards
-- Story scenes
-- Elemental transformations
-
----
-
- # 46\. Final Boss — Prism of Null
-
- The Prism of Null is created from corrupted elemental energy.
-
- It can transform between:
-
- - Water
-- Land
-- Electric
-- Fire
-- Ice
-- Air
-- Light
-- Dark
-- Common
-
- Each form changes its:
-
- - Skills
-- Weaknesses
-- Resistances
-- Appearance
-- Battle strategy
-
- The final battle requires the player to understand the entire elemental system.
-
----
-
- # 47\. Main Villain
-
- The villain believes that elemental balance creates chaos.
-
- Their goal is to control all nine elements through the Prism of Null.
-
- They collect:
-
- - Prism Shards
-- Elemental Cores
-- Guardian energy
-- Light energy
-- Dark energy
-
- The player gradually discovers their plan throughout every world.
-
----
-
- # 48\. Final Revelation
-
- The Prism system was never designed to control the elements.
-
- It was designed to keep them in balance.
-
- The nine elements represent different forces.
-
-```
-Water     = Change
-Land      = Strength
-Electric  = Energy
-Fire      = Creation
-Ice       = Preservation
-Air       = Freedom
-Light     = Hope
-Dark      = Fear
-Common    = Balance
+```text
+Locked -> Available -> Active -> Completed
+                     -> Failed only when explicitly designed
 ```
 
- No single element should dominate.
+Core objective types:
 
- The world survives because the elements coexist.
+- talk to NPC
+- reach node/location
+- defeat monster/trainer/boss
+- capture monster
+- collect item
+- use item
+- win battle
+- enter map
+- complete quest
+- trigger story sequence
 
----
+Quest definitions include:
 
- # 49\. Ending
+- stable ID
+- prerequisites
+- objective list
+- rewards
+- failure rules if any
+- completion rules
+- next quest/unlocks
+- repeatability flag
 
- After defeating the Prism of Null:
-
- - The nine elements stabilize.
-- The worlds begin recovering.
-- The Guardians return.
-- The Prism system is restored.
-- The villain's organization collapses.
-- The player's achievements become known across Aevareth.
-
- The player becomes recognized as a new:
-
- # Prism Guardian
-
- The final scene shows a mysterious Prism fragment falling from the sky.
-
- It contains an unknown symbol.
-
- This creates the possibility of:
-
- - New regions
-- New elements
-- New monsters
-- New story chapters
-- Future expansions
+Main-story quests are not repeatable. Optional repeatable content must be deliberately authored rather than inferred.
 
 ---
 
- # 50\. Online Event Map System
+## 16. Main story
 
- Aevareth is designed to support future event maps.
+### Premise
 
- Event maps use the same core node system but can have completely different rules.
+Aevareth’s nine elemental forces were once stabilized by an ancient Prism network. During the Prism Festival in the Common world, a corrupted Dark Prism activates and destabilizes nearby monsters. The player discovers that someone is gathering elemental energy to create the **Prism of Null**, an artifact capable of absorbing and dominating all nine forces.
 
- Examples:
+The player’s unusual Prism Orb is eventually revealed as the **Ninth Prism**, aligned to Common/Balance and capable of harmonizing the other elements rather than ruling them.
 
- - Christmas
-- Halloween
-- Summer
-- Anniversary
-- Festival
-- Special collaboration
-- Limited-time story
-- Legendary monster event
+### Central theme
 
----
+Power is sustainable through balance, not domination.
 
- # 51\. Example Christmas Event
+### Main antagonist
 
- ## Christmas Village
+The antagonist believes elemental conflict is proof that freedom creates chaos. Their goal is to collect the elemental cores and force all elements into a single controllable Prism of Null.
 
- A temporary 3D map.
+Motivation must remain ideological rather than purely destructive: they believe imposed unity will prevent future disasters.
 
- Nodes can contain:
+### Player motivation
 
- - Snow paths
-- Gift shops
-- Christmas NPCs
-- Event trainers
-- Wild event monsters
-- Snow caves
-- Frozen lake
-- Christmas boss
+The player begins by protecting home and investigating the corrupted Prism. Their goal expands into protecting captured partners, helping each region, understanding the ancient system, and ultimately choosing balance over control.
 
- Players can:
+### Rival
 
- - Catch event monsters
-- Train monsters
-- Complete event quests
-- Collect Christmas items
-- Battle trainers
-- Find rare event monsters
-- Earn limited rewards
+The Rival begins as a competitive peer, repeatedly challenges the player, and gradually shifts from proving personal superiority to understanding cooperation and elemental balance.
+
+### Recurring allies
+
+- **Professor Arin** — researcher who gives context but does not solve the mystery for the player.
+- **Prism Keeper** — guardian of historical knowledge and safe Prism practices.
+- **Marina** — Water trainer; adaptation and responsibility.
+- **Terra** — Land trainer; resilience and tradition.
+- **Volt** — Electric trainer; ambition, invention, risk.
+- **Kairo** — Fire trainer; passion and consequence.
+- **Serena** — Ice trainer; discipline and preservation.
+- **Aero** — Air trainer; independence and trust.
+- **Luna** — Light trainer; hope without denial.
+- **Raven** — Dark trainer; fear as a warning rather than evil.
 
 ---
 
- # 52\. Event Map Independence
+## 17. Nine-act story structure
 
- An event map can have its own:
+### Act 1 — Meadow of Beginnings / Common
 
- - Story
-- Rules
-- Monsters
-- NPCs
-- Items
-- Shops
-- Rewards
-- Music
-- Environment
-- Boss
-- Quests
-- Encounter system
+- Prism Festival begins.
+- Corrupted Dark Prism causes monster aggression.
+- Player investigates Ancient Prism Shrine.
+- Message: “When the nine elements awaken, the Prism Gate shall open.”
+- Water-signature clue points outward.
+- Rival establishes recurring competitive thread.
 
- It does not need to follow the main world's elemental progression.
+**Act goal:** teach movement, battle, capture, quests, home, save, and world unlock.
 
- This makes seasonal content easier to create.
+### Act 2 — Azure Tide / Water
 
----
+- Abnormal tides threaten settlements.
+- Prism Shards are being stolen.
+- Marina helps investigate.
+- Evidence points toward Land-marked transport routes.
 
- # 53\. Future Expansion System
+**Reveal:** corruption is coordinated, not natural.
 
- The same framework can support:
+### Act 3 — Ancient Terra / Land
 
-```
-MAIN STORY
-    ↓
-NEW REGION
-    ↓
-NEW ELEMENTAL WORLD
-    ↓
-NEW MONSTERS
-    ↓
-NEW SKILLS
-    ↓
-NEW ITEMS
-    ↓
-NEW NPCs
-    ↓
-NEW QUESTS
-    ↓
-NEW BOSS
-```
+- Ruins explain the original balance system.
+- Player learns about elemental cores.
+- Antagonist faction is linked to excavation activity.
 
- The existing movement and map systems remain unchanged.
+**Reveal:** nine cores can power a larger Prism device.
 
----
+### Act 4 — Stormspire / Electric
 
- # 54\. Complete Player Flow
+- Prism reactor destabilizes.
+- Corrupted Electric monsters appear.
+- Antagonist organization becomes visible.
+- Next target: Fire Core.
 
-```
-START GAME
-    ↓
-CREATE / SELECT PLAYER
-    ↓
-SELECT 3 STARTING MONSTERS
-    ↓
-ENTER PLAYER HOME
-    ↓
-VIEW 3D MONSTERS
-    ↓
-OPEN WORLD MAP
-    ↓
-SELECT AVAILABLE WORLD
-    ↓
-ENTER 3D MAP
-    ↓
-SEE PLAYER AVATAR
-    ↓
-TAP STEPPING STONE
-    ↓
-AVATAR AUTOMATICALLY MOVES
-    ↓
-ENCOUNTER NODE
-    ↓
-WILD MONSTER / NPC / TRAINER / ITEM / STORY
-    ↓
-BATTLE / INTERACT / QUEST
-    ↓
-CONTINUE THROUGH NODES
-    ↓
-COMPLETE MAP QUEST
-    ↓
-DEFEAT WORLD BOSS
-    ↓
-MAP COMPLETED
-    ↓
-UNLOCK ANIMATION
-    ↓
-NEW WORLD UNLOCKED
-    ↓
-CONTINUE STORY
-```
+**Reveal:** the enemy has sufficient technology to manipulate Prism energy.
+
+### Act 5 — Emberfall / Fire
+
+- Enemy attempts to awaken/control the Fire Guardian.
+- Player interrupts ritual.
+- Ancient mural shows nine Guardians around a black Prism.
+
+**Reveal:** Prism of Null concept is foreshadowed.
+
+### Act 6 — Frostveil / Ice
+
+- Artificial amplification freezes the region.
+- Player defeats/recovers the affected Guardian.
+- Ninth Prism reacts and reveals Skyreach.
+
+**Reveal:** player’s Prism is not ordinary capture technology.
+
+### Act 7 — Skyreach / Air
+
+- Ancient Prism Library is discovered.
+- Records define the Prism of Null as an absorber of elemental forces.
+- Stopping it requires understanding the Light archive.
+
+**Reveal:** Null can be completed only if Balance/Common is also subverted.
+
+### Act 8 — Solara / Light
+
+- Light Guardian identifies the player’s orb as the Ninth Prism.
+- Common is revealed as Balance, not “no element.”
+- Enemy’s final route leads to Nocturne Abyss.
+
+**Reveal:** the player can harmonize the cores; this is why the enemy needs them.
+
+### Act 9 — Nocturne Abyss / Dark
+
+- Elemental collapse affects prior regions.
+- Recurring trainers/allies contribute support sequences.
+- Raven frames fear as information rather than corruption.
+- Player confronts antagonist and completed/near-complete Prism of Null.
+
+### Finale — Prism of Null
+
+The final boss uses phase profiles representing the nine elements. The fight reuses the normal battle runtime plus boss rules; it does not require a separate combat engine.
+
+After victory, the player uses the Ninth Prism to restore balance instead of absorbing the cores.
 
 ---
 
- # 55\. Complete Game Loop
+## 18. Ending and post-game
 
-```
-EXPLORE
-   ↓
-ENCOUNTER
-   ↓
-BATTLE
-   ↓
-CAPTURE
-   ↓
-TRAIN
-   ↓
-LEARN SKILLS
-   ↓
-USE ITEMS
-   ↓
-EVOLVE
-   ↓
-COMPLETE QUESTS
-   ↓
-DEFEAT TRAINERS
-   ↓
-DEFEAT BOSSES
-   ↓
-UNLOCK WORLD
-   ↓
-DISCOVER STORY
-   ↓
-REPEAT
-```
+After the finale:
+
+- elemental instability stops
+- Guardians recover
+- major story worlds remain explorable
+- NPC dialogue updates to post-game states
+- unfinished side quests remain available where logically valid
+- trainers can offer rematches through explicit post-game interactions
+- rare/legendary encounter chains can remain available
+- collection/completion tracking stays active
+- selected bosses may have challenge rematches as optional content
+
+The player is recognized as a **Prism Guardian**.
+
+A mysterious Prism fragment may foreshadow future content, but the base story must feel complete without requiring an expansion.
+
+### Post-game goals
+
+- complete monster collection
+- finish side quests
+- find optional secrets/treasures
+- trainer/guardian rematches
+- complete world/map completion targets
+- optional legendary encounters
+
+Do not add infinite scaling, prestige systems, or procedural endgame unless later testing proves they are needed.
 
 ---
 
- # 56\. Technical Design Philosophy
+## 19. Mission/content structure
 
- Aevareth should be built around reusable systems.
+Each production map should contain a deliberately small content package:
 
- The same underlying systems should support:
+- one clear main objective path
+- optional branch nodes
+- a limited set of meaningful NPCs
+- encounter table(s)
+- collectibles/rewards
+- one or more side interactions only where they add value
+- map completion conditions
 
- - Main maps
-- Side maps
-- Event maps
-- Seasonal maps
-- Future expansions
-- Limited-time content
+### Typical map flow
 
- The map content changes, but the core logic remains reusable.
-
- ## Shared Systems
-
-```
-3D WORLD
-    +
-NODE MOVEMENT
-    +
-MONSTER SYSTEM
-    +
-BATTLE SYSTEM
-    +
-QUEST SYSTEM
-    +
-NPC SYSTEM
-    +
-ITEM SYSTEM
-    +
-PRISM SYSTEM
+```text
+Enter map
+ -> establish local problem
+ -> interact/investigate
+ -> optional branch content
+ -> trainer or story challenge
+ -> dungeon/special area if needed
+ -> boss/final objective
+ -> resolution
+ -> unlock next map/world progression
 ```
 
- This allows new content to be added without redesigning the entire game.
+Rewards can include:
+
+- Prism Marks
+- consumables
+- Prism Orbs
+- evolution/key items
+- monster/skill access
+- story/world unlocks
 
 ---
 
- # 57\. Final Project Structure
+## 20. Events
 
-```
-elemental-prism-world/
-│
-├── README.md
-│
-├── game/
-│   ├── GAME_OVERVIEW.md
-│   ├── GAMEPLAY.md
-│   ├── GRAPHICS_STYLE.md
-│   ├── CAMERA_SYSTEM.md
-│   ├── 3D_WORLD_SYSTEM.md
-│   ├── NODE_MOVEMENT_SYSTEM.md
-│   ├── MAP_EXPLORATION_SYSTEM.md
-│   ├── MONSTER_SELECTION_SYSTEM.md
-│   ├── ELEMENTS.md
-│   ├── BATTLE_SYSTEM.md
-│   ├── CAPTURE_SYSTEM.md
-│   ├── MONSTER_SYSTEM.md
-│   ├── SKILL_SYSTEM.md
-│   ├── EVOLUTION_SYSTEM.md
-│   └── PROGRESSION.md
-│
-├── items/
-│   ├── ITEM_SYSTEM.md
-│   ├── POTIONS.md
-│   ├── BATTLE_ITEMS.md
-│   ├── STATUS_ITEMS.md
-│   ├── BUFFS.md
-│   ├── DEBUFFS.md
-│   ├── ELEMENTAL_ITEMS.md
-│   ├── PRISM_ITEMS.md
-│   ├── EVOLUTION_ITEMS.md
-│   ├── KEY_ITEMS.md
-│   ├── QUEST_ITEMS.md
-│   └── CONSUMABLES.md
-│
-├── prism/
-│   ├── PRISM_SYSTEM.md
-│   ├── PRISM_ORBS.md
-│   ├── PRISM_SHARDS.md
-│   ├── ELEMENTAL_CORES.md
-│   ├── PRISM_GUARDIANS.md
-│   └── PRISM_OF_NULL.md
-│
-├── world/
-│   ├── WORLD_MAP.md
-│   ├── COMMON_WORLD.md
-│   ├── WATER_WORLD.md
-│   ├── LAND_WORLD.md
-│   ├── ELECTRIC_WORLD.md
-│   ├── FIRE_WORLD.md
-│   ├── ICE_WORLD.md
-│   ├── AIR_WORLD.md
-│   ├── LIGHT_WORLD.md
-│   └── DARK_WORLD.md
-│
-├── locations/
-│   ├── LOCATION_DATABASE.md
-│   ├── TOWNS.md
-│   ├── ROUTES.md
-│   ├── DUNGEONS.md
-│   ├── CAVES.md
-│   ├── TEMPLES.md
-│   ├── RUINS.md
-│   └── PRISM_SHRINES.md
-│
-├── story/
-│   ├── MAIN_STORY.md
-│   ├── STORY_TIMELINE.md
-│   ├── CHAPTER_01_COMMON.md
-│   ├── CHAPTER_02_WATER.md
-│   ├── CHAPTER_03_LAND.md
-│   ├── CHAPTER_04_ELECTRIC.md
-│   ├── CHAPTER_05_FIRE.md
-│   ├── CHAPTER_06_ICE.md
-│   ├── CHAPTER_07_AIR.md
-│   ├── CHAPTER_08_LIGHT.md
-│   ├── CHAPTER_09_DARK.md
-│   ├── CUTSCENES.md
-│   └── ENDING.md
-│
-├── monsters/
-│   ├── MONSTER_DATABASE.md
-│   ├── MONSTER_STATS.md
-│   ├── MONSTER_ELEMENTS.md
-│   ├── MONSTER_EVOLUTION.md
-│   ├── COMMON_MONSTERS.md
-│   ├── WATER_MONSTERS.md
-│   ├── LAND_MONSTERS.md
-│   ├── ELECTRIC_MONSTERS.md
-│   ├── FIRE_MONSTERS.md
-│   ├── ICE_MONSTERS.md
-│   ├── AIR_MONSTERS.md
-│   ├── LIGHT_MONSTERS.md
-│   ├── DARK_MONSTERS.md
-│   ├── RARE_MONSTERS.md
-│   ├── LEGENDARY_MONSTERS.md
-│   └── MYTHIC_MONSTERS.md
-│
-├── skills/
-│   ├── SKILL_DATABASE.md
-│   ├── WATER_SKILLS.md
-│   ├── ICE_SKILLS.md
-│   ├── FIRE_SKILLS.md
-│   ├── LAND_SKILLS.md
-│   ├── ELECTRIC_SKILLS.md
-│   ├── AIR_SKILLS.md
-│   ├── LIGHT_SKILLS.md
-│   ├── DARK_SKILLS.md
-│   └── COMMON_SKILLS.md
-│
-├── characters/
-│   ├── CHARACTER_DATABASE.md
-│   ├── PLAYER.md
-│   ├── PROFESSOR_ARIN.md
-│   ├── RIVAL.md
-│   ├── PRISM_KEEPER.md
-│   ├── MARINA.md
-│   ├── TERRA.md
-│   ├── VOLT.md
-│   ├── KAIRO.md
-│   ├── SERENA.md
-│   ├── AERO.md
-│   ├── LUNA.md
-│   ├── RAVEN.md
-│   ├── VILLAIN.md
-│   └── SUPPORTING_NPCS.md
-│
-├── trainers/
-│   ├── TRAINER_SYSTEM.md
-│   ├── TRAINER_DATABASE.md
-│   ├── COMMON_TRAINERS.md
-│   ├── WATER_TRAINERS.md
-│   ├── LAND_TRAINERS.md
-│   ├── ELECTRIC_TRAINERS.md
-│   ├── FIRE_TRAINERS.md
-│   ├── ICE_TRAINERS.md
-│   ├── AIR_TRAINERS.md
-│   ├── LIGHT_TRAINERS.md
-│   └── DARK_TRAINERS.md
-│
-├── quests/
-│   ├── QUEST_SYSTEM.md
-│   ├── MAIN_QUESTS.md
-│   ├── SIDE_QUESTS.md
-│   ├── WORLD_QUESTS.md
-│   ├── NPC_QUESTS.md
-│   └── PRISM_QUESTS.md
-│
-├── bosses/
-│   ├── BOSS_DATABASE.md
-│   ├── WORLD_BOSSES.md
-│   ├── ELEMENTAL_GUARDIANS.md
-│   ├── LEGENDARY_BOSSES.md
-│   ├── VILLAIN_BATTLES.md
-│   └── FINAL_BOSS.md
-│
-└── encounters/
-    ├── ENCOUNTER_SYSTEM.md
-    ├── COMMON_WORLD_ENCOUNTERS.md
-    ├── WATER_WORLD_ENCOUNTERS.md
-    ├── LAND_WORLD_ENCOUNTERS.md
-    ├── ELECTRIC_WORLD_ENCOUNTERS.md
-    ├── FIRE_WORLD_ENCOUNTERS.md
-    ├── ICE_WORLD_ENCOUNTERS.md
-    ├── AIR_WORLD_ENCOUNTERS.md
-    ├── LIGHT_WORLD_ENCOUNTERS.md
-    └── DARK_WORLD_ENCOUNTERS.md
-```
+Events are future content using the same maps/nodes/interactions/quests/battle systems.
+
+Supported future event concepts:
+
+- seasonal map
+- limited story
+- special trainer chain
+- legendary encounter
+- anniversary content
+
+### Important scope rule
+
+The current game does **not** require a live-service backend.
+
+Offline/bundled events may be activated by build/version/configuration. If future events have trusted start/end times, competitive rewards, or server-controlled availability, a backend time/entitlement authority must be added then.
+
+Do not rely on the device clock for security-sensitive event eligibility.
 
 ---
 
- # 58\. Final Definition
+## 21. Future PvP preparation
 
- **Aevareth: Monster Realm** is a **3D, node-based monster-collecting RPG**.
+PvP is not implemented now.
 
- The player does not manually move the avatar.
+Foundational choices made now so PvP can be added later:
 
- Instead:
+- battle rules do not depend on scene objects
+- battle actions are explicit data/commands
+- battle calculations are centralized
+- stable content IDs are used
+- seeded RNG can be supplied through BattleContext
+- presentation is separate from battle authority
+- battle results are explicit objects
 
- **Tap → Avatar walks → Encounter → Battle/Interact → Continue**
+Do **not** build now:
 
- The player has a 3D home where their monsters live and move automatically.
+- networking transport
+- lobby
+- matchmaking
+- ranking
+- anti-cheat
+- replication
+- server authority
+- PvP UI
 
- Every main world is a unique 3D environment with its own:
+---
 
- - Monsters
-- Element
-- NPCs
-- Trainers
-- Quests
-- Items
-- Story
-- Boss
-- Visual identity
-- Stepping-stone design
+## 22. Content scope tiers
 
- But all worlds are connected through one continuous story.
+### Must-have
 
- The Prism system connects the monsters, elements, world progression, legendary creatures, and final story.
+- node exploration
+- Common vertical slice
+- battle/capture
+- monster party/storage
+- items
+- quest/story sequencing
+- save/load
+- one complete world-quality pipeline proven
 
- The node-based system also allows unlimited future content, including seasonal and online event maps.
+### Should-have
 
- # AEVARETH: MONSTER REALM
+- polished home presentation
+- advanced trainer AI profiles
+- optional boss phases
+- richer side quests
+- refined collectibles/completion tracking
+- content authoring tools justified by production pain
 
- ## **Nine Elements. One Realm. Infinite Legends.**
+### Optional
 
- **FINAL GAME DESIGN STATUS: LOCKED / BASE DESIGN COMPLETE**
+- complex home social simulation
+- large puzzle catalog
+- advanced weather-driven encounters
+- extensive cosmetic systems
+
+### Future only
+
+- new maps/regions
+- limited events
+- PvP
+
+---
+
+## 23. Design consistency rules
+
+1. Core systems are reusable; worlds/maps are content.
+2. One map has one primary Battle World reference; boss/night/event differences are presentation variants unless a truly distinct scene is necessary.
+3. Land is the canonical element name.
+4. No base mana/MP system unless intentionally introduced later.
+5. Story sequences orchestrate dialogue/battle/quest actions; NPC scripts do not own the whole flow.
+6. Persistent state uses stable IDs, never display names or scene references.
+7. Large content production begins only after the vertical slice proves save/load and map-to-battle return.
+8. Future expansion is limited to maps, events, and PvP preparation unless a separate approved design expands scope.
+9. A feature that cannot be tested independently should be decomposed before production.
+10. New content should normally require data and assets, not modifications to core gameplay code.
+
+---
+
+## 24. Game-design acceptance criteria
+
+The design is ready for implementation when the team can answer yes to all of these:
+
+- Can a designer add a monster without editing battle-controller code?
+- Can a map author add nodes/conditions/interactions without adding map-specific gameplay logic?
+- Can story dialogue launch a battle and resume afterward?
+- Can a battle return the player to the exact originating map/node?
+- Can quests react to battle/capture/story events without battle knowing about quests?
+- Can one map swap battle presentation without changing combat rules?
+- Can save/load restore world, map, node, party, inventory, quests, story flags, and settings?
+- Can new maps/events reuse the same core systems?
+- Can a future PvP layer use battle commands/calculations without depending on Unity presentation objects?
+
+This document is the canonical gameplay/story specification. Technical implementation details live in `archectural_plan.md`.
