@@ -1806,3 +1806,391 @@ Marina             ← content
  The architecture is now designed so that **Monster, Skill, Effect, VFX, animation, audio, maps, battle environments, bosses, quests and events can all be produced later without rebuilding the foundation**.
 
  The first production milestone is therefore **not "make the monsters."** It is to prove the complete **Map → Battle World → Battle → Map** pipeline with placeholder content. Once that passes, large-scale content production can safely begin.
+
+
+ add ths A node does not decide “talk” or “battle” by itself. The node triggers an encounter/story interaction, and the story/encounter definition determines what happens.
+
+So a Stepping Stone node could contain an NPC who is part of the story, and the interaction can be:
+
+Talk only
+
+Talk → Battle
+
+Battle → Talk
+
+Talk → Choice → Battle
+
+Talk → Story sequence → Leave
+
+Wild encounter → Battle immediately
+
+Trainer encounter → Talk → Battle → Victory dialogue
+
+Boss → Story introduction → Battle → Ending sequence
+
+Final interaction flow
+PLAYER ARRIVES AT NODE
+        │
+        ▼
+   NODE RESOLVER
+        │
+        ▼
+  What content is here?
+        │
+ ┌──────┼─────────┬───────────┐
+ ▼      ▼         ▼           ▼
+NPC   WILD      TRAINER      STORY
+ │    MONSTER      │           │
+ │       │         │           │
+ ▼       ▼         ▼           ▼
+Story   Battle   Dialogue    Story
+Check   Start    │           Sequence
+ │                ▼
+ │             Battle?
+ │             /    \
+ │           YES     NO
+ │            │       │
+ ▼            ▼       ▼
+Dialogue    Battle   Continue
+ │            │
+ ▼            ▼
+Next Story  Result
+
+Story dialogue should be a real system
+For example, the player reaches:
+
+Map: Water World
+Node: Stepping Stone 07
+Content: NPC_Marina
+Story Requirement: WaterQuest_03
+
+The node resolver checks the current story state.
+
+Scenario A — NPC is part of the story
+Player arrives
+      ↓
+Marina appears
+      ↓
+Story Sequence starts
+      ↓
+MC dialogue
+      ↓
+Marina dialogue
+      ↓
+Camera focuses on characters
+      ↓
+Dialogue continues
+      ↓
+Marina leaves
+      ↓
+Quest objective updated
+
+No battle occurs.
+
+Scenario B — Story requires a battle
+Player arrives
+      ↓
+Marina dialogue
+      ↓
+"Then prove yourself!"
+      ↓
+Battle starts
+      ↓
+Battle
+      ↓
+Victory
+      ↓
+Marina dialogue
+      ↓
+Story continues
+      ↓
+Quest updated
+
+The battle is therefore a step inside the story sequence.
+
+Scenario C — Trainer encounter
+This should be separate from a normal NPC conversation.
+
+Player reaches trainer
+       ↓
+Trainer detects player
+       ↓
+Trainer introduction
+       ↓
+"Let's battle!"
+       ↓
+Battle
+       ↓
+Victory / Defeat
+       ↓
+Trainer reaction dialogue
+       ↓
+Reward
+
+So the trainer's encounter can be:
+
+Dialogue
+   ↓
+Battle
+   ↓
+Dialogue
+
+Scenario D — Wild monster
+Wild monsters should normally skip dialogue.
+
+Player enters encounter node
+        ↓
+Wild Encounter Resolver
+        ↓
+Battle
+        ↓
+Victory / Capture / Escape
+        ↓
+Return to exploration
+
+But the system should still allow special wild encounters:
+
+Approach legendary monster
+        ↓
+Story sequence
+        ↓
+Legendary appears
+        ↓
+Dialogue / cinematic
+        ↓
+Battle
+
+So even a wild monster can become story-controlled when necessary.
+
+The key architecture change
+I would update the previous architecture to explicitly introduce:
+
+InteractionDefinition
+
+and:
+
+StorySequence
+
+InteractionDefinition
+InteractionDefinition
+├── ID
+├── Trigger
+├── Conditions
+├── InteractionType
+├── StorySequence
+├── BattleContext
+├── CompletionRules
+└── NextAction
+
+Interaction types could include:
+
+Dialogue
+Story
+WildEncounter
+TrainerEncounter
+Battle
+DialogueThenBattle
+BattleThenDialogue
+StoryThenBattle
+StoryThenDialogue
+Choice
+QuestInteraction
+Shop
+Cutscene
+
+But don't hard-code these as giant if/else chains.
+
+Instead, they should resolve into reusable actions.
+
+Story Sequence
+The story system becomes an orchestration layer.
+
+StorySequence
+│
+├── Dialogue
+├── CharacterMove
+├── CameraFocus
+├── Animation
+├── VFX
+├── Audio
+├── Spawn
+├── Despawn
+├── GiveItem
+├── SetFlag
+├── StartQuest
+├── CompleteObjective
+├── StartBattle
+├── Wait
+├── Choice
+└── End
+
+For example:
+
+SteppingStone_07_Story
+│
+├── CameraFocus(Marina)
+├── Dialogue(MC)
+├── Dialogue(Marina)
+├── Dialogue(MC)
+├── Dialogue(Marina)
+├── StartBattle(WaterTrainer)
+├── WaitForBattle
+├── Dialogue(Marina)
+├── SetFlag(WaterTrialStarted)
+└── End
+
+That is much cleaner than making the NPC itself contain all the logic.
+
+The screen presentation
+Yes, the dialogue should be presented as an actual story dialogue scene on the screen, while the world remains the underlying environment.
+
+For example:
+
+┌─────────────────────────────────────────┐
+│                                         │
+│              3D GAME WORLD              │
+│                                         │
+│        MC                    NPC        │
+│                                         │
+│                                         │
+├─────────────────────────────────────────┤
+│ MARINA                                  │
+│                                         │
+│ "You finally made it to the stones."    │
+│                                         │
+│                         [Tap to continue]│
+└─────────────────────────────────────────┘
+
+The dialogue system controls:
+
+Speaker
+
+Portrait, if used
+
+Name
+
+Text
+
+Typing speed
+
+Auto advance
+
+Player input
+
+Camera
+
+Character focus
+
+Animation
+
+Facial expression
+
+Voice/audio
+
+Choices
+
+Story flags
+
+The world doesn't stop existing. The game simply enters a StoryDialogue game mode.
+
+Final game-mode relationship
+I would lock this into the architecture:
+
+EXPLORATION
+     │
+     ▼
+NODE RESOLVER
+     │
+     ▼
+INTERACTION
+     │
+ ┌───┴───────────────────────────┐
+ │                               │
+ ▼                               ▼
+STORY / DIALOGUE             ENCOUNTER
+ │                               │
+ │                       ┌───────┼────────┐
+ │                       │       │        │
+ │                     WILD    TRAINER   BOSS
+ │                       │       │        │
+ │                       ▼       ▼        ▼
+ │                    BATTLE  DIALOGUE  STORY
+ │                               │        │
+ │                               ▼        ▼
+ │                             BATTLE   BATTLE
+ │
+ ▼
+STORY ACTIONS
+ │
+ ├── Dialogue
+ ├── Battle
+ ├── Choice
+ ├── Quest
+ ├── Reward
+ ├── Flag
+ ├── Cutscene
+ └── Unlock
+ │
+ ▼
+RETURN TO EXPLORATION
+
+Most important rule
+Battle should be a reusable system, not a special type of NPC.
+
+And dialogue should be a reusable story system, not something hard-coded into NPCs.
+
+Therefore the same battle can be launched by:
+
+Wild monster
+Trainer
+NPC
+Boss
+Quest
+Story
+Legendary
+Event
+
+And the same dialogue system can be launched by:
+
+NPC
+Trainer
+Boss
+Wild monster
+Quest
+Story
+Event
+World entrance
+Node
+
+That gives you the flexibility you're describing without creating separate systems for every scenario.
+
+So your Stepping Stone example becomes completely valid:
+Stepping Stone Node
+        ↓
+NPC is present
+        ↓
+Node Interaction
+        ↓
+Story condition checked
+        ↓
+Story Sequence
+        ↓
+MC ↔ NPC dialogue
+        ↓
+Does story require battle?
+        │
+       YES
+        ↓
+Battle Context created
+        ↓
+Battle
+        ↓
+Battle Result
+        ↓
+Story continues
+        ↓
+More dialogue
+        ↓
+Quest/Story state updated
+        ↓
+Return to node
