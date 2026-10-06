@@ -3409,3 +3409,95 @@ GameState
 
  > **The Battle World is presentation/environment. The Battle Runtime is the authority for combat rules. The persistent GameState is the authority for the player's actual progression.**
 
+
+Simple workflow
+In Blender:
+
+Create/model your character.
+
+Create the character's armature/bones.
+
+Rig the character.
+
+Animate a complete walk cycle.
+
+Make it loop smoothly.
+
+Export the character + armature + walk animation as FBX.
+
+In Unity:
+
+Import the FBX.
+
+Set the character's rig to Humanoid if it's a human character.
+
+Unity detects the walk animation.
+
+Create an Animator Controller.
+
+Add your Blender walk animation.
+
+Connect it to your movement system.
+
+For example:
+
+Player not moving
+       ↓
+    Idle
+       ↓
+Player moves
+       ↓
+    Walk animation
+       ↓
+Player stops
+       ↓
+    Idle
+
+The important part is that Unity does not need to create the walking animation. Blender already contains the animation. Unity simply plays the animation according to the player's movement.
+
+You can do this for basically all character animations
+Blender:
+
+Idle
+
+Walk
+
+Run
+
+Sprint
+
+Jump
+
+Fall
+
+Attack
+
+Block
+
+Dodge
+
+Hit reaction
+
+Death
+
+Interactions
+
+Emotes
+
+Cutscene animations
+
+Unity:
+
+Decides when to play them.
+
+For example, your Unity movement code can say:
+
+Player speed = 0 → play Idle
+Player speed > 0 → play Walk
+Player speed > walking threshold → play Run
+
+So Blender handles how the character moves, while Unity handles when and why the animation happens.
+
+For your project, this is a perfectly normal and practical pipeline, and you don't need a complicated animation system just to use Blender-made walking animations.
+
+NOT ONLY IN PERSON ,SKILLS AND MONSTER ANIMATION,MAP DESIGN ,EACH MAP WORDL DESIGN AND OTHER GAME ASSETS
