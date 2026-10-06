@@ -2194,3 +2194,1218 @@ More dialogue
 Quest/Story state updated
         ↓
 Return to node
+
+
+add this 
+
+Not completely. The previous architecture established the **battle framework**, but it did not fully specify the **battle-world rules and mechanics** you just listed.
+
+ For the plan to truly be finalized, I would add a dedicated **Battle Rules & Battle Runtime Architecture** section. That becomes part of the locked foundation.
+
+ # Aevareth — Final Battle World Architecture
+
+ The battle system should be treated as a complete game mode:
+
+```
+EXPLORATION
+    ↓
+Battle Trigger
+    ↓
+Battle Context
+    ↓
+BATTLE WORLD
+    ↓
+Battle Runtime
+    ↓
+Battle Result
+    ↓
+Exploration / Story
+```
+
+ The **Battle World** is the actual combat environment, while the **Battle Runtime** controls the rules.
+
+---
+
+ # 1\. Battle World
+
+ Every battle loads into a battle environment appropriate to the battle context.
+
+```
+BattleWorld
+├── Arena
+├── BattleCamera
+├── PlayerSide
+├── OpponentSide
+├── SpawnPoints
+├── Lighting
+├── Environment
+├── BattleUI
+├── VFX
+├── Audio
+└── BattleController
+```
+
+ The important distinction is:
+
+ > **The map/world determines where the battle comes from. The Battle World determines where and how the battle is fought.**
+
+ For example:
+
+```
+Water World
+   ↓
+Coral Cave Map
+   ↓
+Stepping Stone Node
+   ↓
+Wild Monster Encounter
+   ↓
+Water Cave Battle World
+```
+
+ A different node could produce:
+
+```
+Water World
+   ↓
+Trainer Encounter
+   ↓
+Water Trainer Battle World
+```
+
+ And a boss:
+
+```
+Water World
+   ↓
+Guardian Node
+   ↓
+Boss Battle
+   ↓
+Water Guardian Battle World
+```
+
+ So you can have **battle-world themes/templates**, without creating a completely separate battle engine for every location.
+
+---
+
+ # 2\. One Battle Engine
+
+ There should be **one authoritative BattleController**.
+
+```
+BattleController
+├── Battle Initialization
+├── Turn/Action Flow
+├── Target Selection
+├── Damage Calculation
+├── Status Processing
+├── Switching
+├── Items
+├── Capture
+├── Experience
+├── Defeat
+├── Victory
+└── Battle Completion
+```
+
+ The battle type changes through `BattleContext`, not by creating separate battle systems.
+
+---
+
+ # 3\. How many monsters can fight?
+
+ This must be an explicit battle rule.
+
+```
+BattleRules
+├── PlayerActiveSlots
+├── OpponentActiveSlots
+├── PlayerPartyLimit
+├── OpponentPartyLimit
+├── ReserveLimit
+└── SwitchingRules
+```
+
+ For example, the architecture supports:
+
+```
+1 vs 1
+2 vs 2
+3 vs 3
+1 vs 2
+2 vs 1
+Boss vs Party
+```
+
+ without rewriting the battle engine.
+
+ The **default Aevareth battle configuration** can be:
+
+```
+Player Party: up to 6
+Opponent Party: up to 6
+Active Monsters: 1
+```
+
+ Then special battles can override the rules.
+
+ For example:
+
+```
+Normal Wild
+1 active vs 1 active
+
+Trainer
+1 active vs 1 active
+
+Double Battle
+2 active vs 2 active
+
+Boss
+1 boss vs 1–3 active player monsters
+```
+
+ The exact numbers are therefore **data-driven BattleRules**, not hard-coded into the battle controller.
+
+---
+
+ # 4\. Party system
+
+```
+PartyState
+├── Slot 1
+├── Slot 2
+├── Slot 3
+├── Slot 4
+├── Slot 5
+└── Slot 6
+```
+
+ Each slot references a `MonsterInstance`.
+
+ The battle creates a runtime copy/reference of the relevant combat state.
+
+```
+MonsterInstance
+       ↓
+BattleMonsterState
+```
+
+ This prevents the battle system from directly modifying unrelated presentation objects.
+
+---
+
+ # 5\. Switching
+
+ Switching becomes a proper battle action.
+
+```
+SwitchAction
+├── SourceMonster
+├── DestinationMonster
+├── SwitchReason
+└── Priority
+```
+
+ Possible reasons:
+
+```
+PlayerSwitch
+ForcedSwitch
+MonsterDefeated
+AbilityEffect
+StoryEffect
+BossMechanic
+```
+
+ Flow:
+
+```
+Player chooses Switch
+        ↓
+Validate switch
+        ↓
+Current monster leaves
+        ↓
+Switch effects
+        ↓
+New monster enters
+        ↓
+Entry effects
+        ↓
+Battle continues
+```
+
+ The rules determine whether switching is allowed.
+
+---
+
+ # 6\. Battle actions
+
+ Every combatant operates through an action system.
+
+```
+BattleAction
+├── Skill
+├── Switch
+├── Item
+├── Capture
+├── Escape
+├── Defend
+└── Special
+```
+
+ Each action has:
+
+```
+Actor
+Target
+Priority
+Speed
+ActionType
+Parameters
+```
+
+ Then:
+
+```
+Choose Actions
+      ↓
+Validate
+      ↓
+Determine Order
+      ↓
+Execute
+      ↓
+Resolve Effects
+      ↓
+Check Defeat
+      ↓
+Check Battle End
+      ↓
+Next Turn
+```
+
+---
+
+ # 7\. Turn order
+
+ Turn order should be its own system.
+
+```
+TurnOrderSystem
+```
+
+ It considers things such as:
+
+```
+Priority
+Speed
+Move modifiers
+Status effects
+Battle rules
+Forced actions
+```
+
+ Example:
+
+```
+Monster A
+Skill priority: +1
+Speed: 80
+
+Monster B
+Skill priority: 0
+Speed: 150
+```
+
+ A's priority may allow it to act first.
+
+ The exact formula belongs to `BattleRules`.
+
+---
+
+ # 8\. Skills during battle
+
+ The skill system previously defined becomes the actual combat pipeline:
+
+```
+SkillSelection
+      ↓
+SkillValidation
+      ↓
+TargetValidation
+      ↓
+ActionOrder
+      ↓
+SkillExecution
+      ↓
+EffectProcessor
+      ↓
+Damage/Status/etc.
+      ↓
+BattleEvents
+```
+
+ A skill can produce multiple effects:
+
+```
+Fireball
+├── Damage
+└── Burn
+```
+
+ Or:
+
+```
+Guardian Blessing
+├── Heal
+├── Shield
+└── Defense Buff
+```
+
+---
+
+ # 9\. Damage calculation
+
+ Create a dedicated:
+
+```
+DamageSystem
+```
+
+ Conceptually:
+
+```
+Base Power
+      ↓
+Attacker Stats
+      ↓
+Defender Stats
+      ↓
+Element
+      ↓
+Type Effectiveness
+      ↓
+Critical
+      ↓
+Modifiers
+      ↓
+Randomization
+      ↓
+Final Damage
+```
+
+ Important:
+
+ **Do not bury the damage formula inside individual skills.**
+
+ The formula belongs to the battle calculation layer.
+
+---
+
+ # 10\. Element/type system
+
+```
+ElementSystem
+```
+
+ handles:
+
+```
+Fire
+Water
+Earth
+Electric
+Ice
+Air
+Light
+Dark
+...
+```
+
+ It can resolve:
+
+```
+Weak
+Resistant
+Immune
+Neutral
+Super Effective
+```
+
+ And special mechanics can be added through data rather than modifying every skill.
+
+---
+
+ # 11\. HP and defeat
+
+ Each battle monster has runtime combat state:
+
+```
+BattleMonsterState
+├── CurrentHP
+├── MaxHP
+├── CurrentStats
+├── Statuses
+├── Buffs
+├── Debuffs
+├── Cooldowns
+├── TemporaryEffects
+└── BattleFlags
+```
+
+ When:
+
+```
+CurrentHP <= 0
+```
+
+ the battle engine creates:
+
+```
+MonsterDefeated
+```
+
+ Then:
+
+```
+Forced Switch?
+       ↓
+YES → Choose next monster
+NO  → Continue
+```
+
+---
+
+ # 12\. Items
+
+ Items should use the same effect system.
+
+```
+ItemDefinition
+├── ID
+├── ItemType
+├── Target
+├── Effects
+├── Restrictions
+└── BattleRules
+```
+
+ Battle items could include:
+
+```
+Potion
+Super Potion
+Status Cure
+Battle Buff
+Revive
+Capture Item
+Special Quest Item
+```
+
+ For example:
+
+```
+Potion
+   ↓
+Target Monster
+   ↓
+Heal Effect
+   ↓
+HP Updated
+```
+
+ No special potion logic should be hard-coded into BattleController.
+
+---
+
+ # 13\. Prism Orbs
+
+ Yes — **Prism Orbs should be explicitly part of the battle architecture** if they are Aevareth's capture mechanic.
+
+ Create:
+
+```
+PrismOrbSystem
+```
+
+ Flow:
+
+```
+Player chooses Prism Orb
+        ↓
+Capture validation
+        ↓
+Calculate capture chance
+        ↓
+Capture attempt
+        ↓
+Success?
+     /      \
+   YES       NO
+    │         │
+Capture      Monster remains
+    │
+Battle ends / continues
+```
+
+ The capture calculation can consider:
+
+```
+Monster species
+Monster level
+Current HP
+Status
+Orb type
+Battle type
+Boss rules
+Story rules
+Capture modifiers
+```
+
+ And importantly:
+
+```
+CaptureAllowed
+```
+
+ comes from `BattleRules`.
+
+ Therefore:
+
+```
+Wild Monster → YES
+Trainer Monster → NO
+Story Boss → configurable
+Legendary → configurable
+Event Monster → configurable
+```
+
+---
+
+ # 14\. Capture result
+
+ The capture system should not simply spawn a monster.
+
+ It creates a proper `MonsterInstance`.
+
+```
+CaptureSuccess
+      ↓
+Create MonsterInstance
+      ↓
+Assign InstanceID
+      ↓
+Generate/retain stats
+      ↓
+Assign Level
+      ↓
+Assign XP
+      ↓
+Assign Skills
+      ↓
+Assign Personality/etc.
+      ↓
+Add to Party / Storage
+```
+
+ Then:
+
+```
+MonsterCaptured
+```
+
+ is broadcast through the event system.
+
+ That lets quests, achievements, story and progression react without the capture system knowing about them.
+
+---
+
+ # 15\. Experience
+
+ Experience needs its own system:
+
+```
+ExperienceSystem
+```
+
+ After battle:
+
+```
+BattleResult
+      ↓
+XP Calculation
+      ↓
+XP Distribution
+      ↓
+Monster XP Updated
+      ↓
+Level-Up Check
+```
+
+---
+
+ # 16\. Monster leveling
+
+ Each monster instance contains persistent progression:
+
+```
+MonsterProgression
+├── Level
+├── CurrentXP
+├── XPToNextLevel
+├── Stats
+├── LearnedSkills
+├── EvolutionState
+└── Other Growth Data
+```
+
+ When enough XP is earned:
+
+```
+XP >= XP Required
+       ↓
+Level Up
+       ↓
+Increase Level
+       ↓
+Recalculate Stats
+       ↓
+Check New Skills
+       ↓
+Check Evolution
+       ↓
+Story/Quest Events
+```
+
+---
+
+ # 17\. Level-up presentation
+
+ The battle system should report the result.
+
+ Then presentation handles:
+
+```
+Battle Victory
+   ↓
+XP Screen
+   ↓
+Monster gains XP
+   ↓
+Level Up
+   ↓
+Stat Increase
+   ↓
+New Skill?
+   ↓
+Evolution?
+```
+
+ This keeps gameplay and presentation separate.
+
+---
+
+ # 18\. Evolution
+
+ Evolution should also be data-driven.
+
+```
+EvolutionDefinition
+├── FromMonster
+├── ToMonster
+├── Conditions
+└── Presentation
+```
+
+ Conditions can be:
+
+```
+Level
+Item
+Quest
+Story Flag
+Element
+Friendship
+Time
+Battle
+Special Event
+```
+
+ The same condition system used by nodes and quests can be reused here.
+
+---
+
+ # 19\. Status effects
+
+ During battle:
+
+```
+Burn
+Poison
+Freeze
+Paralysis
+Sleep
+Fear
+Curse
+Bleed
+Slow
+Shield
+Buff
+Debuff
+```
+
+ are all handled by:
+
+```
+StatusSystem
+```
+
+ At appropriate battle phases:
+
+```
+Turn Start
+   ↓
+Status Processing
+   ↓
+Actions
+   ↓
+Turn End
+   ↓
+Periodic Effects
+```
+
+---
+
+ # 20\. Battle phases
+
+ This is important and should be explicitly locked.
+
+```
+BattlePhase
+│
+├── Initialization
+├── Introduction
+├── PlayerChoice
+├── ActionResolution
+├── EffectResolution
+├── DefeatResolution
+├── CaptureResolution
+├── Victory
+├── Defeat
+├── Escape
+└── Conclusion
+```
+
+ A more detailed turn can be:
+
+```
+TURN START
+    ↓
+Status Start
+    ↓
+Choose Actions
+    ↓
+Validate Actions
+    ↓
+Determine Order
+    ↓
+Execute Actions
+    ↓
+Resolve Effects
+    ↓
+Check KO
+    ↓
+Forced Switch
+    ↓
+Status End
+    ↓
+Check Victory/Defeat
+    ↓
+NEXT TURN
+```
+
+ This gives the battle system a predictable state machine.
+
+---
+
+ # 21\. Escape
+
+ Wild battles can use:
+
+```
+EscapeAction
+```
+
+ Battle rules decide whether it is allowed.
+
+```
+Wild Battle
+→ Escape allowed
+
+Trainer Battle
+→ Escape disabled
+
+Boss Battle
+→ Configurable
+
+Story Battle
+→ Usually disabled
+```
+
+---
+
+ # 22\. Battle rewards
+
+ After victory:
+
+```
+BattleResult
+├── Winner
+├── Loser
+├── XP
+├── Items
+├── Currency
+├── CaptureResult
+├── QuestProgress
+├── StoryProgress
+└── Unlocks
+```
+
+ Rewards are processed outside the core action execution.
+
+---
+
+ # 23\. Trainer battles
+
+ Trainer definitions:
+
+```
+TrainerDefinition
+├── ID
+├── Party
+├── AIProfile
+├── BattleRules
+├── IntroDialogue
+├── VictoryDialogue
+├── DefeatDialogue
+├── Rewards
+└── StoryIntegration
+```
+
+ Example:
+
+```
+Player approaches trainer
+        ↓
+Intro dialogue
+        ↓
+Battle
+        ↓
+Victory
+        ↓
+Victory dialogue
+        ↓
+Reward
+        ↓
+Story/Quest update
+```
+
+---
+
+ # 24\. AI
+
+ Opponent AI should also be independent.
+
+```
+BattleAI
+├── Random
+├── Basic
+├── Defensive
+├── Aggressive
+├── Tactical
+├── Boss
+└── Story
+```
+
+ AI chooses a `BattleAction`.
+
+ It does **not** execute the action itself.
+
+```
+AI
+ ↓
+Choose Action
+ ↓
+BattleController
+ ↓
+Validate
+ ↓
+Execute
+```
+
+ That separation is important.
+
+---
+
+ # 25\. Boss battles
+
+ Bosses get additional rules:
+
+```
+BossBattleRules
+├── Phases
+├── HP Thresholds
+├── Special Skills
+├── Summons
+├── Immunities
+├── CaptureAllowed
+├── Forced Events
+├── Enrage
+└── StoryTriggers
+```
+
+ Example:
+
+```
+100% HP
+→ Phase 1
+
+70% HP
+→ Phase 2
+
+40% HP
+→ Enrage
+
+10% HP
+→ Final mechanic
+```
+
+ The normal BattleController still handles the combat.
+
+ The boss definition supplies the special rules.
+
+---
+
+ # 26\. Battle + story integration
+
+ This is exactly what you were asking about earlier.
+
+ A story sequence can contain:
+
+```
+Dialogue
+Dialogue
+Camera
+Battle
+WaitForBattle
+Dialogue
+Reward
+QuestUpdate
+```
+
+ Example:
+
+```
+Stepping Stone
+      ↓
+NPC appears
+      ↓
+MC dialogue
+      ↓
+NPC dialogue
+      ↓
+NPC challenges MC
+      ↓
+Battle starts
+      ↓
+Battle World loads
+      ↓
+Battle
+      ↓
+Victory
+      ↓
+Battle World closes
+      ↓
+Return to Story
+      ↓
+NPC dialogue
+      ↓
+Quest progresses
+```
+
+ So the battle does **not break the story**.
+
+ It is simply another action inside the story sequence.
+
+---
+
+ # 27\. Battle World loading
+
+ The flow should be:
+
+```
+Exploration World
+       ↓
+Battle Request
+       ↓
+Create BattleContext
+       ↓
+Save Exploration State
+       ↓
+Load Battle World
+       ↓
+Spawn Combatants
+       ↓
+Initialize Battle
+       ↓
+Battle
+       ↓
+Create BattleResult
+       ↓
+Unload Battle World
+       ↓
+Restore Exploration
+       ↓
+Apply BattleResult
+       ↓
+Continue Story / Quest
+```
+
+ This also means the player can return to the **exact exploration node/state** after battle.
+
+---
+
+ # 28\. Battle World should not own progression
+
+ The Battle World should **not** permanently own:
+
+```
+Quest progress
+Monster collection
+Player inventory
+Story flags
+World unlocks
+```
+
+ Instead:
+
+```
+Battle World
+     ↓
+Battle Runtime
+     ↓
+Battle Result
+     ↓
+GameState
+```
+
+ The persistent game state remains authoritative.
+
+---
+
+ # 29\. Final Battle architecture
+
+ I would now lock this into Aevareth:
+
+```
+                     BATTLE REQUEST
+                           │
+                           ▼
+                    BATTLE CONTEXT
+                           │
+                           ▼
+                     BATTLE WORLD
+                           │
+                    ┌──────┴──────┐
+                    │             │
+                    ▼             ▼
+               PRESENTATION    RUNTIME
+                    │             │
+                    │       BattleController
+                    │             │
+                    │       ┌─────┼─────┐
+                    │       ▼     ▼     ▼
+                    │    Actions Effects Rules
+                    │       │     │     │
+                    │       └─────┼─────┘
+                    │             │
+                    │      ┌──────┼────────┐
+                    │      ▼      ▼        ▼
+                    │   Skills  Items   Switching
+                    │      │      │        │
+                    │      └──────┼────────┘
+                    │             ▼
+                    │        Capture
+                    │             │
+                    │             ▼
+                    │       XP / Level
+                    │             │
+                    └─────────────┼─────────────
+                                  ▼
+                            BATTLE RESULT
+                                  │
+                    ┌─────────────┼─────────────┐
+                    ▼             ▼             ▼
+                 QUEST          STORY       GAME STATE
+                    │             │             │
+                    └─────────────┼─────────────┘
+                                  ▼
+                           RETURN TO MAP
+```
+
+ ## 30\. What is now covered
+
+ With this addition, the finalized architecture explicitly covers:
+
+ - Battle World loading/unloading
+- Battle types
+- Party size
+- Active monster count
+- Switching
+- Forced switching
+- Turn order
+- Skills
+- Targets
+- Damage
+- Elements
+- Critical hits/modifiers
+- Status effects
+- Buffs/debuffs
+- Items
+- Potions
+- Revives
+- Prism Orbs
+- Capture rules
+- Capture calculations
+- Monster instances
+- XP
+- Leveling
+- Stat growth
+- Skill learning
+- Evolution
+- Wild battles
+- Trainer battles
+- Boss battles
+- Story battles
+- Escape
+- AI
+- Battle rewards
+- Battle phases
+- Battle victory/defeat
+- Battle → story continuation
+- Story → battle → story
+- Quest integration
+- Event integration
+- Save-state integration
+- Battle presentation
+- Battle camera
+- Battle VFX/audio
+- Battle UI
+
+ And the key architectural rule remains:
+
+ > **The Battle World is presentation/environment. The Battle Runtime is the authority for combat rules. The persistent GameState is the authority for the player's actual progression.**
+
