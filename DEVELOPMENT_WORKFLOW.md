@@ -266,22 +266,207 @@ This makes the game easier to test, balance, debug, and expand.
 
 ---
 
-## 9. Asset Workflow
+## 9. AI Asset Production Standard
 
-Aevareth may use AI-generated original game assets, but gameplay code must not depend on unfinished final art.
+Aevareth uses an **AI-first asset pipeline, not an AI-only rule**.
 
-Development order:
+AI should be used aggressively to create original production assets where it provides a real quality or speed benefit, while Codex and Unity remain responsible for implementation, integration, optimization, validation, and runtime behavior.
 
-1. Use placeholders where needed.
-2. Finish gameplay behavior.
-3. Establish final asset requirements.
-4. Replace placeholders with final assets.
-5. Configure import settings.
-6. Create animation/VFX/audio bindings.
-7. Validate in Unity.
-8. Optimize only when necessary.
+The core principle is:
 
-Keep assets organized by type and game feature.
+**AI generates creative source assets → Codex builds the systems and integration → Unity turns those assets into a polished playable game.**
+
+Gameplay code must never depend on unfinished final art. Use placeholders first when necessary.
+
+### 9.1 Assets That Should Be AI-Generated When Practical
+
+Prioritize AI generation for original:
+
+- Monster artwork.
+- Every monster evolution stage.
+- Alternate monster presentation art where needed.
+- NPC and character artwork.
+- Character portraits.
+- Dialogue portraits.
+- Map/environment concept art.
+- Environment textures and decorative art.
+- Battle backgrounds.
+- Parallax layers.
+- Loading screens.
+- Splash art.
+- Menu/key art.
+- Item artwork.
+- Consumable icons.
+- Equipment icons if equipment is introduced.
+- Capture-orb designs.
+- Element icons.
+- Status-effect icons.
+- Skill icons.
+- Quest icons.
+- UI decorative artwork.
+- VFX source textures.
+- Spell/skill effect textures.
+- Particles/sprite sheets when appropriate.
+- Music when AI audio quality is production-ready.
+- Sound effects when AI audio quality is production-ready.
+- Ambient audio when appropriate.
+
+AI-generated assets must remain **original to Aevareth** and must not intentionally imitate or copy protected characters, monsters, logos, or distinctive assets from another game.
+
+### 9.2 Highest-Priority Asset Quality
+
+The highest visual-quality priority is:
+
+1. Monsters.
+2. Monster evolution forms.
+3. Skills and battle effects.
+4. Battle presentation.
+5. Maps and environments.
+6. Important characters/NPCs.
+7. UI and secondary assets.
+
+Monster design is the game's primary visual identity and must receive the most iteration and quality control.
+
+### 9.3 Monster and Evolution Rules
+
+Every monster family must have a recognizable identity while each evolution must show meaningful progression.
+
+Do not create evolution stages that are merely:
+
+- recolors,
+- enlarged versions,
+- trivial accessory swaps,
+- copies of another monster,
+- or the same silhouette with minor edits.
+
+Each evolution should communicate increased power, maturity, elemental mastery, specialization, or transformation while preserving enough visual DNA to remain recognizable as the same evolutionary family.
+
+For every monster family, define:
+
+- Core concept.
+- Element.
+- Body/silhouette language.
+- Signature features.
+- Personality or visual attitude.
+- Evolution progression.
+- Final-form visual payoff.
+- Essence/final evolution concept where applicable.
+- Signature skill visual motifs.
+
+### 9.4 Aevareth Style Bible Requirement
+
+Before large-scale final asset production, maintain an **Aevareth visual style bible**.
+
+It should define:
+
+- Art direction.
+- Rendering style.
+- Shape language.
+- Silhouette rules.
+- Monster proportions.
+- Character proportions.
+- Line treatment if applicable.
+- Surface/material treatment.
+- Lighting direction.
+- Element visual language.
+- Rarity visual language.
+- UI visual language.
+- VFX visual language.
+- Environment mood.
+- Background depth/parallax rules.
+- Animation tone.
+- Allowed and disallowed visual traits.
+
+All newly generated assets must be reviewed against the style bible.
+
+Do not accept individually attractive assets that look like they belong to different games.
+
+### 9.5 Element Visual Language
+
+Each element should have a recognizable but flexible visual identity.
+
+Element identity may influence:
+
+- Shape language.
+- Materials.
+- Energy effects.
+- Particle behavior.
+- Skill effects.
+- UI indicators.
+- Evolution details.
+- Capture-orb styling.
+- Battle feedback.
+
+Element identity must not force every monster of the same element to look alike.
+
+Creativity and monster individuality have higher priority than repeating a single elemental template.
+
+### 9.6 Placeholder-First Production Rule
+
+Use this order:
+
+1. Build gameplay with placeholders.
+2. Prove the mechanic works.
+3. Define the exact production-asset requirement.
+4. Generate candidate AI assets.
+5. Review against the Aevareth style bible.
+6. Select or iterate the best candidate.
+7. Clean/prepare the asset as needed.
+8. Import into Unity.
+9. Configure import settings.
+10. Connect it to data/prefabs.
+11. Add animation/VFX/SFX bindings.
+12. Validate in Play Mode.
+13. Optimize only when needed.
+
+Do not block battle, progression, capture, save/load, map traversal, or other core mechanics because final artwork is unfinished.
+
+### 9.7 Unity-Generated / Unity-Configured Presentation
+
+The following should generally be created or configured inside Unity rather than treated as static AI assets:
+
+- Particle systems.
+- Shaders.
+- Materials.
+- Lighting.
+- Post-processing.
+- Parallax behavior.
+- Camera movement.
+- Camera shake.
+- Hit stop.
+- Screen flashes.
+- Damage feedback.
+- Runtime transitions.
+- UI animation.
+- Animation Controllers.
+- Timeline sequences when useful.
+- Runtime skill composition.
+- Layered battle effects.
+
+AI can generate source textures, sprites, references, sound, or concepts for these systems, but Unity owns their final runtime behavior.
+
+### 9.8 Codex Responsibilities for Assets
+
+Codex should:
+
+- Create data models linking gameplay content to presentation assets.
+- Create ScriptableObjects.
+- Create asset validators.
+- Create naming/organization rules.
+- Create editor tooling when it removes repetitive work.
+- Create reusable VFX/SFX hooks.
+- Create reusable skill-presentation interfaces.
+- Create import/configuration helpers when justified.
+- Detect missing references.
+- Detect duplicate IDs.
+- Detect invalid evolution chains.
+- Detect missing monster/skill icons.
+- Detect missing required presentation bindings.
+- Keep gameplay logic independent of any specific image/audio file.
+
+### 9.9 File Organization
+
+Keep assets organized by feature and purpose.
 
 Example:
 
@@ -290,14 +475,26 @@ Assets/
 ├── Aevareth/
 │   ├── Art/
 │   │   ├── Monsters/
+│   │   │   └── <MonsterFamily>/
+│   │   │       ├── Stage01/
+│   │   │       ├── Stage02/
+│   │   │       ├── Stage03/
+│   │   │       ├── Stage04/
+│   │   │       └── FinalEssence/
 │   │   ├── Characters/
+│   │   ├── NPCs/
 │   │   ├── Environments/
+│   │   ├── BattleBackgrounds/
+│   │   ├── Items/
 │   │   ├── UI/
+│   │   ├── Icons/
 │   │   └── VFX/
 │   ├── Audio/
 │   │   ├── Music/
 │   │   ├── SFX/
-│   │   └── Skills/
+│   │   ├── Skills/
+│   │   └── Ambience/
+│   ├── Animations/
 │   ├── Data/
 │   │   ├── Monsters/
 │   │   ├── Skills/
@@ -310,6 +507,104 @@ Assets/
 │   ├── Tests/
 │   └── Editor/
 ```
+
+### 9.10 Naming and Asset Metadata
+
+Every production asset should have:
+
+- A clear file name.
+- Associated monster/skill/item/map ID when relevant.
+- Version or revision information when useful.
+- Intended use.
+- Expected resolution.
+- Unity import rule if special handling is required.
+
+Avoid ambiguous names such as:
+
+- `monster1.png`
+- `new_final2.png`
+- `effect_test.png`
+
+Prefer names such as:
+
+- `MON_Flarecub_S01_Battle.png`
+- `MON_Flarecub_S04_Portrait.png`
+- `SKL_Fireburst_Impact_01.png`
+- `ITEM_FireCaptureOrb_Icon.png`
+
+### 9.11 Generation Provenance and Rights Tracking
+
+Keep a lightweight production record for final AI-generated assets.
+
+Record at minimum:
+
+- Asset ID/path.
+- Generation tool/model or source.
+- Generation date.
+- Whether the asset was manually edited afterward.
+- License/usage status when the tool or source has relevant terms.
+- Notes for important revisions.
+
+Do not store private API keys or sensitive prompt-service credentials in the repository.
+
+The goal is traceability, not bureaucracy.
+
+### 9.12 Quality Gate
+
+An AI-generated asset is not production-ready merely because it was generated successfully.
+
+Before approval, check:
+
+- Does it match the Aevareth style?
+- Is the silhouette readable?
+- Does it fit the intended element without becoming generic?
+- Is it distinct from existing monsters/assets?
+- Does it contain obvious AI artifacts?
+- Is anatomy acceptable for the chosen style?
+- Are repeated details coherent?
+- Does it read correctly at in-game size?
+- Does it work against the intended background?
+- Does it crop correctly?
+- Does transparency work correctly when needed?
+- Is the resolution appropriate?
+- Does the asset create any obvious copyright/trademark concern?
+- Does it animate or layer correctly if animation is required?
+
+If it fails, regenerate, edit, or reject it.
+
+### 9.13 No Random Asset Dumping
+
+Do not generate large numbers of assets without a production requirement.
+
+Every generated production asset must correspond to a defined:
+
+- Monster.
+- Evolution.
+- Skill.
+- Item.
+- Character.
+- NPC.
+- Map.
+- Environment.
+- UI component.
+- VFX requirement.
+- Audio requirement.
+
+Generate deliberately and integrate continuously.
+
+### 9.14 Final Asset Principle
+
+Aevareth should be **AI-assisted at production scale but human/Unity validated at quality scale**.
+
+AI generation increases production speed; it does not replace:
+
+- Art direction.
+- Consistency checking.
+- Gameplay testing.
+- Unity integration.
+- Performance validation.
+- Asset optimization.
+- Final quality control.
 
 ---
 
