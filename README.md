@@ -14,23 +14,6 @@ Do not implement from one lower-authority document in isolation when a higher-au
 
 ---
 
-# Aevareth: Monster Realm — Implementation Execution Rule
-
-Before implementing the game, read and follow [DEVELOPMENT_WORKFLOW.md](./DEVELOPMENT_WORKFLOW.md).
-
-Use the required hybrid workflow:
-
-- **Codex** is the primary builder for source-controlled Unity code, data, tests, project settings, architecture, and Git work.
-- **Computer Use** is used for Unity Editor interaction, Console inspection, Play Mode testing, scene/prefab validation, UI/camera/animation/VFX/audio verification, and build-setting checks.
-- A milestone is not considered fully verified until applicable Unity runtime/editor validation is complete.
-- Prefer small, playable, tested increments over large batches of unvalidated generated Unity files.
-
-Required loop:
-
-`Plan → Codex implementation → Unity validation with Computer Use → fix → retest → commit → next milestone`
-
----
-
 Analyze all three .md files as a professional game developer, technical architect, and QA specialist.
 
 Review the entire contents of all three Markdown files carefully and systematically. Identify every issue, inconsistency, missing requirement, unclear instruction, technical risk, unnecessary complexity, scalability problem, performance concern, architectural weakness, and anything that could cause problems during development or later expansion.
