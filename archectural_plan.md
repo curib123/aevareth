@@ -1,3 +1,5 @@
+> **AUTHORITY NOTICE:** This document is governed by [SOURCE_OF_TRUTH.md](./SOURCE_OF_TRUTH.md). It is the authoritative technical-architecture document for Aevareth unless a higher-authority document defines the same topic differently.
+
 Yes. I would update the finalized architecture to make the **Battle World system explicit and locked**.
 
  The key rule will be:
