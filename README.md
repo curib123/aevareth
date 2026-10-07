@@ -1,3 +1,19 @@
+# Aevareth: Monster Realm — Repository Entry Point
+
+> **MANDATORY:** Before any implementation, validation, planning change, or Unity work, read [SOURCE_OF_TRUTH.md](./SOURCE_OF_TRUTH.md). It defines the authoritative document hierarchy and conflict-resolution rules for this repository.
+
+## Required Read Order
+
+1. [SOURCE_OF_TRUTH.md](./SOURCE_OF_TRUTH.md) — highest repository authority for precedence/conflict rules.
+2. [DEVELOPMENT_WORKFLOW.md](./DEVELOPMENT_WORKFLOW.md) — Codex + Computer Use execution, Unity validation, AI asset production, testing, and Git workflow.
+3. [all_plan.md](./all_plan.md) — gameplay/product requirements.
+4. [archectural_plan.md](./archectural_plan.md) — technical architecture.
+5. [plan-structure.md](./plan-structure.md) — repository/project organization when relevant.
+
+Do not implement from one lower-authority document in isolation when a higher-authority document governs the same topic.
+
+---
+
 # Aevareth: Monster Realm — Implementation Execution Rule
 
 Before implementing the game, read and follow [DEVELOPMENT_WORKFLOW.md](./DEVELOPMENT_WORKFLOW.md).
