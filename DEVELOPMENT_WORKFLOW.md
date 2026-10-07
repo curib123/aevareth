@@ -1,3 +1,5 @@
+> **AUTHORITY NOTICE:** This document is governed by [SOURCE_OF_TRUTH.md](./SOURCE_OF_TRUTH.md). Codex and Computer Use must read that file first. This document is the authoritative source for implementation workflow, Unity validation, AI asset production, testing, and execution rules unless a higher-authority rule explicitly overrides it.
+
 # Aevareth: Monster Realm — Unity Development Workflow
 
 ## Purpose
