@@ -1,3 +1,5 @@
+> **AUTHORITY NOTICE:** This document is governed by [SOURCE_OF_TRUTH.md](./SOURCE_OF_TRUTH.md). It defines repository/project organization only and must not override gameplay, architecture, or workflow requirements from higher-authority documents.
+
 elemental-prism-world/
 │
 ├── README.md
