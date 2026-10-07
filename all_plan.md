@@ -1,3 +1,5 @@
+> **AUTHORITY NOTICE:** This document is governed by [SOURCE_OF_TRUTH.md](./SOURCE_OF_TRUTH.md). It is the authoritative gameplay/product-requirements document, below DEVELOPMENT_WORKFLOW.md only for implementation-process matters. Do not interpret it in isolation when higher-authority rules apply.
+
 
 
  # Aevareth: Monster Realm
